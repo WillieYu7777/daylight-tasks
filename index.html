@@ -775,11 +775,17 @@
     .health-panel-head h3 { margin: 0 0 2px; font-size: 16px; }
     .health-panel-head p { margin: 0; color: var(--muted); font-size: 10px; }
 
-    .health-form { display: grid; grid-template-columns: minmax(0, 1fr) 104px auto; gap: 8px; padding: 14px; border-bottom: 1px solid var(--line-soft); }
+    .health-form { display: grid; grid-template-columns: minmax(0, 1fr) 104px auto auto; gap: 8px; padding: 14px; border-bottom: 1px solid var(--line-soft); }
     .health-form.exercise-form { grid-template-columns: minmax(0, 1fr) 82px 96px auto; }
     .health-form input { min-width: 0; height: 40px; padding: 0 11px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface-strong); color: var(--ink); font-size: 12px; }
     .health-form input::placeholder { color: var(--muted); }
     .health-form button { width: 40px; min-width: 40px; min-height: 40px; padding: 0; border-radius: 10px; box-shadow: none; }
+    .health-form .estimate-button { width: auto; min-width: 92px; padding: 0 11px; border: 1px solid var(--line); background: var(--surface-strong); color: var(--muted); font-size: 10px; font-weight: 850; }
+    .health-form .estimate-button:hover { border-color: var(--ink); color: var(--ink); transform: none; }
+    .health-form .estimate-button .icon { width: 13px; height: 13px; }
+    .estimate-note { margin: 0; padding: 10px 16px; border-bottom: 1px solid var(--line-soft); background: var(--accent-soft); color: var(--muted); font-size: 10px; line-height: 1.5; }
+    .estimate-note strong { color: var(--ink); }
+    .estimate-note.error { background: var(--surface-strong); color: var(--red); }
 
     .health-log { list-style: none; margin: 0; padding: 0; }
     .health-entry { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; align-items: center; gap: 10px; padding: 13px 17px; border-bottom: 1px solid var(--line-soft); }
@@ -1144,6 +1150,7 @@
       .health-metric { padding: 15px; }
       .health-metric-value { font-size: 28px; }
       .health-form, .health-form.exercise-form { grid-template-columns: minmax(0, 1fr) 92px auto; }
+      .health-form:not(.exercise-form) .estimate-button { grid-column: 1 / 3; }
       .health-form.exercise-form input[name="calories"] { grid-column: 1 / 3; }
       .insights-header { display: block; padding: 19px; }
       .period-switch { margin-top: 14px; }
@@ -1358,10 +1365,12 @@
                 <div><h3>Food & drinks</h3><p>Enter the calories for each item.</p></div>
               </header>
               <form class="health-form" id="foodForm">
-                <input id="foodName" name="name" type="text" maxlength="80" placeholder="e.g. Chicken sandwich" autocomplete="off" required aria-label="Food or drink" />
-                <input id="foodCalories" name="calories" type="number" min="0" max="10000" step="1" placeholder="Calories" required aria-label="Calories" />
+                <input id="foodName" name="name" type="text" maxlength="80" placeholder="e.g. 2 eggs or 1 cup rice" autocomplete="off" required aria-label="Food or drink" />
+                <input id="foodCalories" name="calories" type="number" min="0" max="10000" step="1" placeholder="Calories" aria-label="Calories, optional when using estimate" />
+                <button class="estimate-button" id="estimateCalories" type="button" aria-label="Estimate calories from food description"><svg class="icon" viewBox="0 0 24 24"><path d="m12 3 1.2 3.8L17 8l-3.8 1.2L12 13l-1.2-3.8L7 8l3.8-1.2L12 3ZM18.5 14l.8 2.2 2.2.8-2.2.8-.8 2.2-.8-2.2-2.2-.8 2.2-.8.8-2.2Z"/></svg><span>Estimate</span></button>
                 <button class="primary-button" type="submit" aria-label="Add food"><svg class="icon" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button>
               </form>
+              <p class="estimate-note" id="foodEstimateNote" hidden></p>
               <ul class="health-log" id="foodLog"></ul>
               <div class="health-empty" id="foodEmpty">No food logged today.</div>
             </article>
@@ -1665,6 +1674,61 @@
         { discipline: 'Philosophy', quote: 'Knowledge itself is power.', author: 'Francis Bacon' },
         { discipline: 'Philosophy', quote: 'One cannot step twice in the same river.', author: 'Heraclitus' },
         { discipline: 'Psychology', quote: 'A failure is not always a mistake; it may simply be the best one can do.', author: 'B. F. Skinner' }
+      ];
+      const commonFoods = [
+        { name: 'Fried rice', aliases: ['fried rice'], per100: 163, perUnit: 333, unitLabel: 'cup' },
+        { name: 'Brown rice, cooked', aliases: ['brown rice'], per100: 123, perUnit: 216, perCup: 216, unitLabel: 'cup' },
+        { name: 'White rice, cooked', aliases: ['white rice', 'cooked rice', 'rice'], per100: 130, perUnit: 205, perCup: 205, unitLabel: 'cup' },
+        { name: 'Chicken sandwich', aliases: ['chicken sandwich'], per100: 240, perUnit: 400, unitLabel: 'sandwich' },
+        { name: 'Peanut butter sandwich', aliases: ['peanut butter sandwich', 'pb sandwich'], per100: 350, perUnit: 350, unitLabel: 'sandwich' },
+        { name: 'Chicken breast, cooked', aliases: ['chicken breast', 'grilled chicken', 'chicken'], per100: 165, perUnit: 165, unitLabel: '100 g serving' },
+        { name: 'Fried egg', aliases: ['fried egg', 'fried eggs'], per100: 196, perUnit: 90, unitLabel: 'egg' },
+        { name: 'Boiled egg', aliases: ['boiled egg', 'boiled eggs'], per100: 155, perUnit: 78, unitLabel: 'egg' },
+        { name: 'Egg', aliases: ['egg', 'eggs'], per100: 155, perUnit: 78, unitLabel: 'large egg' },
+        { name: 'Salmon, cooked', aliases: ['salmon'], per100: 206, perUnit: 206, unitLabel: '100 g serving' },
+        { name: 'Tuna, canned', aliases: ['canned tuna', 'tuna'], per100: 116, perUnit: 191, unitLabel: 'can' },
+        { name: 'Steak, cooked', aliases: ['beef steak', 'steak'], per100: 271, perUnit: 271, unitLabel: '100 g serving' },
+        { name: 'Ground beef, cooked', aliases: ['ground beef', 'minced beef'], per100: 250, perUnit: 250, unitLabel: '100 g serving' },
+        { name: 'Tofu', aliases: ['tofu'], per100: 144, perUnit: 144, unitLabel: '100 g serving' },
+        { name: 'Pasta, cooked', aliases: ['spaghetti', 'cooked pasta', 'pasta'], per100: 158, perUnit: 221, perCup: 221, unitLabel: 'cup' },
+        { name: 'Noodles, cooked', aliases: ['cooked noodles', 'noodles'], per100: 138, perUnit: 221, perCup: 221, unitLabel: 'cup' },
+        { name: 'Instant ramen', aliases: ['instant ramen', 'instant noodles', 'ramen'], per100: 436, perUnit: 380, unitLabel: 'packet' },
+        { name: 'Pho', aliases: ['pho'], per100: 70, perUnit: 450, unitLabel: 'bowl' },
+        { name: 'Congee', aliases: ['congee', 'rice porridge'], per100: 46, perUnit: 140, unitLabel: 'bowl' },
+        { name: 'Sushi roll', aliases: ['sushi roll', 'sushi'], per100: 150, perUnit: 300, unitLabel: 'roll' },
+        { name: 'Dumpling', aliases: ['dumpling', 'dumplings', 'gyoza'], per100: 180, perUnit: 50, unitLabel: 'piece' },
+        { name: 'Bao bun', aliases: ['bao bun', 'bao', 'steamed bun'], per100: 220, perUnit: 200, unitLabel: 'bun' },
+        { name: 'Spring roll', aliases: ['spring roll', 'spring rolls'], per100: 250, perUnit: 100, unitLabel: 'piece' },
+        { name: 'Pizza', aliases: ['pizza slice', 'pizza'], per100: 266, perUnit: 285, unitLabel: 'slice' },
+        { name: 'Cheeseburger', aliases: ['cheeseburger'], per100: 270, perUnit: 303, unitLabel: 'burger' },
+        { name: 'Hamburger', aliases: ['hamburger', 'burger'], per100: 250, perUnit: 354, unitLabel: 'burger' },
+        { name: 'French fries', aliases: ['french fries', 'fries'], per100: 312, perUnit: 365, unitLabel: 'medium serving' },
+        { name: 'Oatmeal, cooked', aliases: ['porridge oats', 'oatmeal', 'oats'], per100: 71, perUnit: 154, perCup: 154, unitLabel: 'cup' },
+        { name: 'Breakfast cereal', aliases: ['breakfast cereal', 'cereal'], per100: 370, perUnit: 120, perCup: 120, unitLabel: 'cup' },
+        { name: 'Bread', aliases: ['bread slice', 'toast', 'bread'], per100: 265, perUnit: 80, unitLabel: 'slice' },
+        { name: 'Croissant', aliases: ['croissant'], per100: 406, perUnit: 231, unitLabel: 'croissant' },
+        { name: 'Banana', aliases: ['banana', 'bananas'], per100: 89, perUnit: 105, unitLabel: 'medium banana' },
+        { name: 'Apple', aliases: ['apple', 'apples'], per100: 52, perUnit: 95, unitLabel: 'medium apple' },
+        { name: 'Orange', aliases: ['orange', 'oranges'], per100: 47, perUnit: 62, unitLabel: 'medium orange' },
+        { name: 'Avocado', aliases: ['avocado', 'avocados'], per100: 160, perUnit: 240, unitLabel: 'avocado' },
+        { name: 'Baked potato', aliases: ['baked potato', 'potato'], per100: 93, perUnit: 161, unitLabel: 'medium potato' },
+        { name: 'Sweet potato', aliases: ['sweet potato'], per100: 90, perUnit: 112, unitLabel: 'medium potato' },
+        { name: 'Broccoli, cooked', aliases: ['broccoli'], per100: 35, perUnit: 55, perCup: 55, unitLabel: 'cup' },
+        { name: 'Mixed salad', aliases: ['mixed salad', 'garden salad', 'salad'], per100: 25, perUnit: 100, unitLabel: 'bowl without heavy dressing' },
+        { name: 'Greek yogurt', aliases: ['greek yogurt', 'yogurt', 'yoghurt'], per100: 59, perUnit: 134, perCup: 134, unitLabel: 'cup' },
+        { name: 'Whole milk', aliases: ['whole milk', 'milk'], per100: 61, perUnit: 149, perCup: 149, unitLabel: 'cup' },
+        { name: 'Cheddar cheese', aliases: ['cheddar cheese', 'cheese'], per100: 403, perUnit: 113, unitLabel: '28 g slice' },
+        { name: 'Peanut butter', aliases: ['peanut butter'], per100: 588, perUnit: 94, perTablespoon: 94, unitLabel: 'tablespoon' },
+        { name: 'Almonds', aliases: ['almonds', 'almond'], per100: 579, perUnit: 164, unitLabel: '28 g handful' },
+        { name: 'Chocolate', aliases: ['chocolate bar', 'chocolate'], per100: 546, perUnit: 155, unitLabel: '28 g serving' },
+        { name: 'Cookie', aliases: ['cookie', 'cookies', 'biscuit', 'biscuits'], per100: 488, perUnit: 78, unitLabel: 'medium cookie' },
+        { name: 'Doughnut', aliases: ['doughnut', 'donut'], per100: 452, perUnit: 253, unitLabel: 'doughnut' },
+        { name: 'Ice cream', aliases: ['ice cream'], per100: 207, perUnit: 273, perCup: 273, unitLabel: 'cup' },
+        { name: 'Black coffee', aliases: ['black coffee', 'coffee'], per100: 1, perUnit: 2, perCup: 2, unitLabel: 'cup' },
+        { name: 'Latte', aliases: ['cafe latte', 'caffè latte', 'latte'], per100: 50, perUnit: 190, unitLabel: 'medium cup' },
+        { name: 'Soda', aliases: ['soft drink', 'soda', 'cola', 'coke'], per100: 42, perUnit: 150, unitLabel: 'can' },
+        { name: 'Beer', aliases: ['beer'], per100: 43, perUnit: 153, unitLabel: 'bottle' },
+        { name: 'Wine', aliases: ['wine'], per100: 85, perUnit: 125, unitLabel: 'glass' }
       ];
       let currentFactIndex = 0;
       let currentQuoteIndex = 0;
@@ -2149,6 +2213,74 @@
         els.exerciseLog.innerHTML = exercise.map(healthEntryTemplate).join('');
         els.foodEmpty.hidden = food.length > 0;
         els.exerciseEmpty.hidden = exercise.length > 0;
+      }
+
+      function estimateFoodCalories(description) {
+        const input = description.trim().toLowerCase();
+        const searchable = ` ${input.replace(/[^a-z0-9.]+/g, ' ').replace(/\s+/g, ' ').trim()} `;
+        let match = null;
+        commonFoods.forEach(food => food.aliases.forEach(alias => {
+          const normalizedAlias = alias.toLowerCase().replace(/[^a-z0-9.]+/g, ' ').trim();
+          if (searchable.includes(` ${normalizedAlias} `) && (!match || normalizedAlias.length > match.alias.length)) {
+            match = { food, alias: normalizedAlias };
+          }
+        }));
+        if (!match) return null;
+
+        const food = match.food;
+        const numberPattern = '(\\d+(?:\\.\\d+)?)';
+        const grams = input.match(new RegExp(`${numberPattern}\\s*(?:g|gram|grams)\\b`));
+        const ounces = input.match(new RegExp(`${numberPattern}\\s*(?:oz|ounce|ounces)\\b`));
+        const cups = input.match(new RegExp(`${numberPattern}\\s*(?:cup|cups)\\b`));
+        const tablespoons = input.match(new RegExp(`${numberPattern}\\s*(?:tbsp|tablespoon|tablespoons)\\b`));
+        const leadingCount = input.match(/^\s*(\d+(?:\.\d+)?)/);
+        let calories;
+        let assumption;
+
+        if (grams && food.per100) {
+          const amount = Number(grams[1]);
+          calories = food.per100 * amount / 100;
+          assumption = `${amount} g of ${food.name.toLowerCase()}`;
+        } else if (ounces && food.per100) {
+          const amount = Number(ounces[1]);
+          calories = food.per100 * amount * 28.3495 / 100;
+          assumption = `${amount} oz of ${food.name.toLowerCase()}`;
+        } else if (cups && (food.perCup || food.perUnit)) {
+          const amount = Number(cups[1]);
+          calories = (food.perCup || food.perUnit) * amount;
+          assumption = `${amount} ${amount === 1 ? 'cup' : 'cups'} of ${food.name.toLowerCase()}`;
+        } else if (tablespoons && (food.perTablespoon || food.perUnit)) {
+          const amount = Number(tablespoons[1]);
+          calories = (food.perTablespoon || food.perUnit) * amount;
+          assumption = `${amount} ${amount === 1 ? 'tablespoon' : 'tablespoons'} of ${food.name.toLowerCase()}`;
+        } else {
+          const wordMultiplier = /\bhalf\b/.test(input) ? 0.5 : /\bquarter\b/.test(input) ? 0.25 : 1;
+          const amount = leadingCount ? Number(leadingCount[1]) : wordMultiplier;
+          calories = (food.perUnit || food.per100) * amount;
+          assumption = `${amount === 1 ? '1' : amount} ${amount === 1 ? food.unitLabel : `${food.unitLabel}s`}`;
+        }
+
+        return { calories: Math.max(0, Math.round(calories)), assumption, food: food.name };
+      }
+
+      function showFoodEstimate() {
+        const description = document.getElementById('foodName').value;
+        const note = document.getElementById('foodEstimateNote');
+        if (!description.trim()) {
+          showToast('Describe the food and portion first');
+          document.getElementById('foodName').focus();
+          return;
+        }
+        const estimate = estimateFoodCalories(description);
+        note.hidden = false;
+        if (!estimate) {
+          note.classList.add('error');
+          note.textContent = 'I do not recognize that food yet. You can still enter the calories manually.';
+          return;
+        }
+        document.getElementById('foodCalories').value = estimate.calories;
+        note.classList.remove('error');
+        note.innerHTML = `<strong>About ${estimate.calories.toLocaleString()} kcal</strong> · Assumed ${escapeHTML(estimate.assumption)}. Adjust the number if the portion, recipe, or brand differs.`;
       }
 
       function addHealthEntry(entry) {
@@ -2754,14 +2886,30 @@
 
       els.foodForm.addEventListener('submit', event => {
         event.preventDefault();
+        const foodName = document.getElementById('foodName').value;
+        let calories = document.getElementById('foodCalories').value;
+        if (calories === '') {
+          const estimate = estimateFoodCalories(foodName);
+          if (!estimate) {
+            showFoodEstimate();
+            return;
+          }
+          calories = estimate.calories;
+        }
         addHealthEntry({
           type: 'food',
-          name: document.getElementById('foodName').value,
-          calories: document.getElementById('foodCalories').value
+          name: foodName,
+          calories
         });
         els.foodForm.reset();
+        document.getElementById('foodEstimateNote').hidden = true;
         document.getElementById('foodName').focus();
         showToast('Food added to today’s total');
+      });
+
+      document.getElementById('estimateCalories').addEventListener('click', showFoodEstimate);
+      document.getElementById('foodName').addEventListener('input', () => {
+        document.getElementById('foodEstimateNote').hidden = true;
       });
 
       els.exerciseForm.addEventListener('submit', event => {
