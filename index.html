@@ -260,6 +260,22 @@
     .icon-button:hover { border-color: var(--ink); }
     .icon-button.enabled { border-color: var(--mint-strong); background: var(--mint); color: var(--mint-strong); }
 
+    .cloud-button { position: relative; }
+    .cloud-dot {
+      position: absolute;
+      right: 1px;
+      bottom: 1px;
+      width: 10px;
+      height: 10px;
+      border: 2px solid var(--surface);
+      border-radius: 50%;
+      background: var(--muted);
+    }
+
+    .cloud-button.connected .cloud-dot { background: var(--mint-strong); }
+    .cloud-button.syncing .cloud-dot { background: var(--yellow); }
+    .cloud-button.error .cloud-dot { background: var(--red); }
+
     .primary-button {
       display: inline-flex;
       align-items: center;
@@ -816,6 +832,18 @@
 
     .secondary-button:hover { background: var(--line-soft); }
 
+    .cloud-body { padding: 24px; }
+    .cloud-intro { margin: 0 0 20px; color: var(--muted); font-size: 14px; line-height: 1.6; }
+    .cloud-state-card { padding: 16px; border: 1px solid var(--line); border-radius: 14px; background: var(--surface-strong); }
+    .cloud-user { display: flex; align-items: center; gap: 12px; margin-bottom: 18px; }
+    .cloud-avatar { display: grid; place-items: center; width: 42px; height: 42px; border-radius: 50%; background: var(--mint); color: var(--mint-strong); }
+    .cloud-avatar .icon { width: 19px; height: 19px; }
+    .cloud-user strong, .cloud-user span { display: block; }
+    .cloud-user span { margin-top: 3px; color: var(--muted); font-size: 12px; }
+    .cloud-actions { display: flex; flex-wrap: wrap; gap: 9px; }
+    .cloud-message { min-height: 20px; margin: 12px 0 0; color: var(--muted); font-size: 12px; line-height: 1.5; }
+    .cloud-message.error { color: var(--red); }
+
     .toast {
       position: fixed;
       left: 50%;
@@ -948,6 +976,10 @@
             <kbd class="search-key">⌘K</kbd>
           </div>
           <div class="top-actions">
+            <button class="icon-button cloud-button" id="cloudButton" aria-label="Cloud sync" title="Cloud sync">
+              <svg class="icon" viewBox="0 0 24 24"><path d="M17.5 19H6a4 4 0 1 1 1.1-7.8A6 6 0 0 1 18.7 9a5 5 0 0 1-1.2 10Z"/></svg>
+              <span class="cloud-dot" aria-hidden="true"></span>
+            </button>
             <button class="icon-button" id="notificationToggle" aria-label="Enable browser reminders" title="Enable browser reminders">
               <svg class="icon" viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/><path d="M10 21h4"/></svg>
             </button>
@@ -1138,15 +1170,54 @@
     </form>
   </dialog>
 
+  <dialog id="cloudDialog">
+    <div class="dialog-head">
+      <h2>Daylight Cloud</h2>
+      <button class="close-button" id="closeCloudDialog" type="button" aria-label="Close cloud sync"><svg class="icon" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></svg></button>
+    </div>
+    <div class="cloud-body">
+      <div id="cloudSignedOut">
+        <p class="cloud-intro">Sign in with the same email on every device. Supabase will keep your tasks, deadlines, reminders, and tracked time safely synchronized.</p>
+        <form id="cloudLoginForm">
+          <div class="field">
+            <label for="cloudEmail">Email address</label>
+            <input id="cloudEmail" type="email" placeholder="you@example.com" autocomplete="email" required />
+          </div>
+          <button class="primary-button" id="sendMagicLink" type="submit">Email me a sign-in link</button>
+        </form>
+      </div>
+      <div id="cloudSignedIn" hidden>
+        <div class="cloud-state-card">
+          <div class="cloud-user">
+            <div class="cloud-avatar"><svg class="icon" viewBox="0 0 24 24"><path d="M17.5 19H6a4 4 0 1 1 1.1-7.8A6 6 0 0 1 18.7 9a5 5 0 0 1-1.2 10Z"/></svg></div>
+            <div><strong>Cloud sync is on</strong><span id="cloudUserEmail"></span></div>
+          </div>
+          <div class="cloud-actions">
+            <button class="primary-button" id="syncNow" type="button">Sync now</button>
+            <button class="secondary-button" id="cloudSignOut" type="button">Sign out</button>
+          </div>
+        </div>
+      </div>
+      <p class="cloud-message" id="cloudMessage" aria-live="polite"></p>
+    </div>
+  </dialog>
+
   <div class="toast" id="toast" role="status" aria-live="polite">
     <span id="toastMessage">Task deleted</span>
     <button id="undoButton" type="button">Undo</button>
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
     (() => {
       const STORAGE_KEY = 'daylight.tasks.v1';
       const THEME_KEY = 'daylight.theme.v1';
+      const CLOUD_OWNER_KEY = 'daylight.cloud.owner.v1';
+      const CLOUD_PENDING_KEY = 'daylight.cloud.pending.v1';
+      const SUPABASE_URL = 'https://rwijpwtjctwkyyokslzx.supabase.co';
+      const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_MOurzeHZ7flgYR94Y2yCCg_IqswHo-M';
+      const SITE_URL = 'https://willieyu7777.github.io/daylight-tasks/';
+      const hadLocalDataAtLoad = localStorage.getItem(STORAGE_KEY) !== null;
       const todayISO = () => {
         const now = new Date();
         const offset = now.getTimezoneOffset();
@@ -1176,6 +1247,15 @@
         calendarDate: new Date(new Date().getFullYear(), new Date().getMonth(), 1),
         lastDeleted: null,
         toastTimer: null
+      };
+
+      const cloud = {
+        client: null,
+        user: null,
+        channel: null,
+        saveTimer: null,
+        syncing: false,
+        applyingRemote: false
       };
 
       const els = {
@@ -1211,6 +1291,13 @@
         timerSummary: document.getElementById('timerSummary'),
         timerActual: document.getElementById('timerActual'),
         resetTimer: document.getElementById('resetTimer'),
+        cloudButton: document.getElementById('cloudButton'),
+        cloudDialog: document.getElementById('cloudDialog'),
+        cloudSignedOut: document.getElementById('cloudSignedOut'),
+        cloudSignedIn: document.getElementById('cloudSignedIn'),
+        cloudEmail: document.getElementById('cloudEmail'),
+        cloudMessage: document.getElementById('cloudMessage'),
+        cloudUserEmail: document.getElementById('cloudUserEmail'),
         toast: document.getElementById('toast'),
         toastMessage: document.getElementById('toastMessage'),
         undoButton: document.getElementById('undoButton')
@@ -1225,8 +1312,156 @@
         }
       }
 
-      function saveTasks() {
+      function saveTasks(options = {}) {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(state.tasks));
+        if (options.cloudSync === false || cloud.applyingRemote) return;
+        localStorage.setItem(CLOUD_PENDING_KEY, 'true');
+        scheduleCloudSave();
+      }
+
+      function setCloudStatus(status, message = '') {
+        els.cloudButton.classList.remove('connected', 'syncing', 'error');
+        if (status !== 'disconnected') els.cloudButton.classList.add(status);
+        const labels = {
+          disconnected: 'Cloud sync: sign in',
+          connected: 'Cloud sync: connected',
+          syncing: 'Cloud sync: syncing',
+          error: 'Cloud sync: needs attention'
+        };
+        els.cloudButton.title = labels[status] || labels.disconnected;
+        els.cloudButton.setAttribute('aria-label', els.cloudButton.title);
+        if (message) {
+          els.cloudMessage.textContent = message;
+          els.cloudMessage.classList.toggle('error', status === 'error');
+        }
+      }
+
+      function taskVersion(task) {
+        return new Date(task.updatedAt || task.completedAt || task.createdAt || 0).getTime() || 0;
+      }
+
+      function mergeTasks(localTasks = [], remoteTasks = []) {
+        const merged = new Map(remoteTasks.map(task => [task.id, task]));
+        localTasks.forEach(task => {
+          const remote = merged.get(task.id);
+          if (!remote || taskVersion(task) >= taskVersion(remote)) merged.set(task.id, task);
+        });
+        return [...merged.values()];
+      }
+
+      function applyCloudTasks(tasks) {
+        cloud.applyingRemote = true;
+        state.tasks = Array.isArray(tasks) ? tasks : [];
+        saveTasks({ cloudSync: false });
+        localStorage.setItem(CLOUD_OWNER_KEY, cloud.user.id);
+        localStorage.removeItem(CLOUD_PENDING_KEY);
+        cloud.applyingRemote = false;
+        render();
+      }
+
+      function scheduleCloudSave() {
+        if (!cloud.user || !cloud.client) return;
+        clearTimeout(cloud.saveTimer);
+        cloud.saveTimer = setTimeout(() => syncToCloud({ silent: true }), 650);
+      }
+
+      async function syncToCloud({ silent = false } = {}) {
+        if (!cloud.user || !cloud.client || cloud.syncing) return;
+        clearTimeout(cloud.saveTimer);
+        const snapshot = JSON.stringify(state.tasks);
+        cloud.syncing = true;
+        setCloudStatus('syncing', 'Saving your tasks…');
+        const { error } = await cloud.client
+          .from('task_boards')
+          .upsert({ user_id: cloud.user.id, tasks: JSON.parse(snapshot), updated_at: new Date().toISOString() }, { onConflict: 'user_id' });
+        cloud.syncing = false;
+
+        if (error) {
+          setCloudStatus('error', `Sync failed: ${error.message}`);
+          if (!silent) showToast('Cloud sync failed — your local copy is safe');
+          return;
+        }
+
+        localStorage.setItem(CLOUD_OWNER_KEY, cloud.user.id);
+        if (JSON.stringify(state.tasks) === snapshot) {
+          localStorage.removeItem(CLOUD_PENDING_KEY);
+          setCloudStatus('connected', 'All changes are saved in the cloud.');
+          if (!silent) showToast('Cloud sync complete');
+        } else {
+          scheduleCloudSave();
+        }
+      }
+
+      async function initialCloudSync() {
+        setCloudStatus('syncing', 'Loading your cloud tasks…');
+        const { data, error } = await cloud.client
+          .from('task_boards')
+          .select('tasks, updated_at')
+          .eq('user_id', cloud.user.id)
+          .maybeSingle();
+
+        if (error) {
+          setCloudStatus('error', `Could not load tasks: ${error.message}`);
+          return;
+        }
+
+        if (data) {
+          const localOwner = localStorage.getItem(CLOUD_OWNER_KEY);
+          const hasPendingLocalChanges = localStorage.getItem(CLOUD_PENDING_KEY) === 'true';
+          const shouldMerge = hasPendingLocalChanges || (hadLocalDataAtLoad && localOwner !== cloud.user.id);
+          applyCloudTasks(shouldMerge ? mergeTasks(state.tasks, data.tasks) : data.tasks);
+        }
+
+        await syncToCloud({ silent: true });
+        subscribeToCloud();
+      }
+
+      function subscribeToCloud() {
+        if (!cloud.client || !cloud.user) return;
+        if (cloud.channel) cloud.client.removeChannel(cloud.channel);
+        cloud.channel = cloud.client
+          .channel(`daylight-${cloud.user.id}`)
+          .on('postgres_changes', {
+            event: 'UPDATE',
+            schema: 'public',
+            table: 'task_boards',
+            filter: `user_id=eq.${cloud.user.id}`
+          }, payload => {
+            if (cloud.syncing || !payload.new?.tasks) return;
+            applyCloudTasks(payload.new.tasks);
+            setCloudStatus('connected', 'Updated from another device.');
+          })
+          .subscribe();
+      }
+
+      function updateCloudAccountUI() {
+        const signedIn = Boolean(cloud.user);
+        els.cloudSignedOut.hidden = signedIn;
+        els.cloudSignedIn.hidden = !signedIn;
+        els.cloudUserEmail.textContent = cloud.user?.email || '';
+        if (!signedIn) setCloudStatus('disconnected', 'Sign in to sync between devices.');
+      }
+
+      async function handleCloudSession(session) {
+        const nextUser = session?.user || null;
+        const changedUser = nextUser?.id !== cloud.user?.id;
+        cloud.user = nextUser;
+        updateCloudAccountUI();
+        if (cloud.user && changedUser) await initialCloudSync();
+      }
+
+      async function initCloud() {
+        if (!window.supabase?.createClient) {
+          setCloudStatus('error', 'Cloud library could not load. Your local tasks still work.');
+          return;
+        }
+        cloud.client = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+        const { data, error } = await cloud.client.auth.getSession();
+        if (error) setCloudStatus('error', `Sign-in check failed: ${error.message}`);
+        await handleCloudSession(data?.session || null);
+        cloud.client.auth.onAuthStateChange((_event, session) => {
+          setTimeout(() => handleCloudSession(session), 0);
+        });
       }
 
       function escapeHTML(value = '') {
@@ -1288,10 +1523,15 @@
         return hours ? `${hours}:${pad(minutes)}:${pad(secs)}` : `${pad(minutes)}:${pad(secs)}`;
       }
 
+      function touchTask(task) {
+        if (task) task.updatedAt = new Date().toISOString();
+      }
+
       function pauseTimer(task) {
         if (!task?.timerRunningSince) return;
         task.actualSeconds = elapsedSeconds(task);
         task.timerRunningSince = null;
+        touchTask(task);
       }
 
       function toggleTimer(id) {
@@ -1309,6 +1549,7 @@
             if (item.id !== id && item.timerRunningSince) pauseTimer(item);
           });
           task.timerRunningSince = new Date().toISOString();
+          touchTask(task);
           showToast(`Timer started for ${task.title}`);
         }
         saveTasks();
@@ -1523,7 +1764,8 @@
           completedAt: null,
           actualSeconds: 0,
           timerRunningSince: null,
-          createdAt: new Date().toISOString()
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString()
         });
         saveTasks();
         render();
@@ -1575,6 +1817,7 @@
         task.completed = !task.completed;
         task.completedAt = task.completed ? new Date().toISOString() : null;
         task.completedOn = task.completed ? todayISO() : null;
+        touchTask(task);
         saveTasks();
         render();
         if (task.completed) showToast('Nice work — task complete');
@@ -1598,6 +1841,7 @@
           if (!isDue || task.notifiedAt === reminderKey) return;
 
           task.notifiedAt = reminderKey;
+          touchTask(task);
           changed = true;
           const message = `${task.title} · ${formatTime(task.time)}`;
           showToast(`Reminder: ${message}`);
@@ -1697,6 +1941,52 @@
       document.getElementById('cancelDialog').addEventListener('click', closeDialog);
       document.getElementById('themeToggleTop').addEventListener('click', toggleTheme);
       document.getElementById('themeToggleSide').addEventListener('click', toggleTheme);
+      els.cloudButton.addEventListener('click', () => {
+        updateCloudAccountUI();
+        els.cloudDialog.showModal();
+      });
+      document.getElementById('closeCloudDialog').addEventListener('click', () => els.cloudDialog.close());
+
+      els.cloudDialog.addEventListener('click', event => {
+        if (event.target === els.cloudDialog) els.cloudDialog.close();
+      });
+
+      document.getElementById('cloudLoginForm').addEventListener('submit', async event => {
+        event.preventDefault();
+        if (!cloud.client) {
+          setCloudStatus('error', 'Cloud connection is unavailable right now.');
+          return;
+        }
+        const button = document.getElementById('sendMagicLink');
+        button.disabled = true;
+        els.cloudMessage.textContent = 'Sending your secure sign-in link…';
+        els.cloudMessage.classList.remove('error');
+        const { error } = await cloud.client.auth.signInWithOtp({
+          email: els.cloudEmail.value.trim(),
+          options: { emailRedirectTo: SITE_URL, shouldCreateUser: true }
+        });
+        button.disabled = false;
+        if (error) {
+          els.cloudMessage.textContent = `Could not send the link: ${error.message}`;
+          els.cloudMessage.classList.add('error');
+        } else {
+          els.cloudMessage.textContent = 'Check your email and open the sign-in link on this device.';
+          els.cloudMessage.classList.remove('error');
+        }
+      });
+
+      document.getElementById('syncNow').addEventListener('click', () => syncToCloud());
+      document.getElementById('cloudSignOut').addEventListener('click', async () => {
+        if (cloud.client) await cloud.client.auth.signOut();
+        if (cloud.channel && cloud.client) cloud.client.removeChannel(cloud.channel);
+        cloud.channel = null;
+        cloud.user = null;
+        updateCloudAccountUI();
+        showToast('Signed out — local tasks remain on this device');
+      });
+      window.addEventListener('online', () => {
+        if (cloud.user && localStorage.getItem(CLOUD_PENDING_KEY) === 'true') syncToCloud({ silent: true });
+      });
 
       els.taskDialog.addEventListener('click', event => {
         if (event.target === els.taskDialog) closeDialog();
@@ -1731,7 +2021,7 @@
         const id = els.taskId.value;
         if (id) {
           const task = state.tasks.find(item => item.id === id);
-          if (task) Object.assign(task, data, { title: data.title.trim(), notes: data.notes.trim(), notifiedAt: null });
+          if (task) Object.assign(task, data, { title: data.title.trim(), notes: data.notes.trim(), notifiedAt: null, updatedAt: new Date().toISOString() });
           saveTasks();
           render();
           showToast('Task updated');
@@ -1769,6 +2059,7 @@
         if (!task) return;
         task.actualSeconds = 0;
         task.timerRunningSince = null;
+        touchTask(task);
         saveTasks();
         els.timerActual.textContent = '00:00';
         els.timerSummary.hidden = true;
@@ -1852,6 +2143,8 @@
       }
       initialiseDate();
       render();
+      updateCloudAccountUI();
+      initCloud();
       checkReminders();
       setInterval(checkReminders, 30000);
       setInterval(updateRunningTimers, 1000);
