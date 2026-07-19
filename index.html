@@ -459,6 +459,26 @@
       transition: width 280ms ease;
     }
 
+    .daily-thought {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin: -8px 0 20px;
+      padding: 14px 16px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: var(--surface);
+    }
+
+    .thought-mark { display: grid; flex: 0 0 auto; place-items: center; width: 36px; height: 36px; border-radius: 11px; background: var(--mint); color: var(--mint-strong); font-family: Georgia, "Times New Roman", serif; font-size: 25px; }
+    .thought-body { min-width: 0; flex: 1; }
+    .thought-label { display: block; margin-bottom: 4px; color: var(--mint-strong); font-size: 9px; font-weight: 850; letter-spacing: 0.09em; text-transform: uppercase; }
+    .thought-text { margin: 0; font-family: Georgia, "Times New Roman", serif; font-size: 14px; line-height: 1.4; }
+    .thought-author { margin-left: 6px; color: var(--muted); font-family: Inter, ui-sans-serif, sans-serif; font-size: 10px; font-style: normal; white-space: nowrap; }
+    .thought-button { display: inline-flex; flex: 0 0 auto; align-items: center; gap: 6px; min-height: 32px; padding: 0 10px; border: 1px solid var(--line); border-radius: 9px; background: transparent; color: var(--muted); font-size: 10px; font-weight: 800; cursor: pointer; }
+    .thought-button:hover { background: var(--line-soft); color: var(--ink); }
+    .thought-button .icon { width: 13px; height: 13px; }
+
     .quick-add {
       display: grid;
       grid-template-columns: minmax(0, 1fr) auto auto;
@@ -771,6 +791,52 @@
     .health-delete .icon { width: 14px; height: 14px; }
     .health-empty { padding: 28px 18px; color: var(--muted); font-size: 11px; text-align: center; }
 
+    .insights-section { display: grid; gap: 16px; }
+    .insights-header { display: flex; align-items: end; justify-content: space-between; gap: 20px; padding: 23px 24px; border: 1px solid var(--line); border-radius: var(--radius-lg); background: var(--surface); }
+    .insights-header h2 { margin: 0 0 5px; font-size: 25px; letter-spacing: -0.035em; }
+    .insights-header p { margin: 0; color: var(--muted); font-size: 12px; }
+
+    .period-switch { display: inline-flex; flex-shrink: 0; gap: 3px; padding: 4px; border: 1px solid var(--line); border-radius: 999px; background: var(--surface-strong); }
+    .period-button { min-height: 34px; padding: 0 13px; border: 0; border-radius: 999px; background: transparent; color: var(--muted); font-size: 11px; font-weight: 800; cursor: pointer; }
+    .period-button:hover { color: var(--ink); }
+    .period-button.active { background: var(--ink); color: var(--surface); }
+
+    .insights-summary { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+    .insight-metric { min-width: 0; padding: 19px; border: 1px solid var(--line); border-radius: var(--radius-md); background: var(--surface); }
+    .insight-metric:first-child { border-color: var(--ink); background: var(--ink); color: var(--surface); }
+    .insight-metric-label { display: block; margin-bottom: 14px; color: var(--muted); font-size: 10px; font-weight: 850; letter-spacing: 0.08em; text-transform: uppercase; }
+    .insight-metric:first-child .insight-metric-label, .insight-metric:first-child .insight-metric-unit { color: currentColor; opacity: 0.7; }
+    .insight-metric-value { font-family: Georgia, "Times New Roman", serif; font-size: 31px; line-height: 1; }
+    .insight-metric-unit { margin-left: 4px; color: var(--muted); font-family: Inter, ui-sans-serif, sans-serif; font-size: 10px; }
+
+    .insights-grid { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(320px, 0.75fr); gap: 14px; }
+    .insight-panel { min-width: 0; overflow: hidden; border: 1px solid var(--line); border-radius: var(--radius-lg); background: var(--surface); }
+    .insight-panel-head { padding: 19px 20px 16px; border-bottom: 1px solid var(--line-soft); }
+    .insight-panel-head h3 { margin: 0 0 4px; font-size: 17px; }
+    .insight-panel-head p { margin: 0; color: var(--muted); font-size: 10px; }
+
+    .category-bars { display: grid; gap: 12px; padding: 18px 20px; border-bottom: 1px solid var(--line-soft); }
+    .category-bar-head { display: flex; justify-content: space-between; gap: 12px; margin-bottom: 6px; font-size: 10px; font-weight: 750; }
+    .category-bar-head span:last-child { color: var(--muted); font-variant-numeric: tabular-nums; }
+    .category-track { height: 7px; overflow: hidden; border-radius: 999px; background: var(--line-soft); }
+    .category-track span { display: block; height: 100%; border-radius: inherit; background: var(--accent); }
+    .category-row:nth-child(2n) .category-track span { background: var(--mint-strong); }
+    .category-row:nth-child(3n) .category-track span { background: #7b78c9; }
+
+    .insight-list { max-height: 330px; overflow-y: auto; list-style: none; margin: 0; padding: 0; }
+    .insight-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 14px; padding: 13px 20px; border-bottom: 1px solid var(--line-soft); }
+    .insight-row:last-child { border-bottom: 0; }
+    .insight-row strong { display: block; overflow: hidden; font-size: 11px; text-overflow: ellipsis; white-space: nowrap; }
+    .insight-row small { color: var(--muted); font-size: 9px; }
+    .insight-row-value { align-self: center; color: var(--accent); font-size: 11px; font-weight: 850; font-variant-numeric: tabular-nums; }
+    .insight-empty { padding: 36px 20px; color: var(--muted); font-size: 11px; text-align: center; }
+
+    .nutrition-totals { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border-bottom: 1px solid var(--line-soft); }
+    .nutrition-total { min-width: 0; padding: 18px 12px; text-align: center; }
+    .nutrition-total + .nutrition-total { border-left: 1px solid var(--line-soft); }
+    .nutrition-total strong { display: block; margin-bottom: 4px; font-family: Georgia, "Times New Roman", serif; font-size: 23px; }
+    .nutrition-total span { color: var(--muted); font-size: 8px; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; }
+
     .calendar-section {
       border: 1px solid var(--line);
       border-radius: var(--radius-lg);
@@ -1014,6 +1080,8 @@
       .focus-card { grid-column: 1 / -1; }
       .health-summary { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .health-panels { grid-template-columns: 1fr; }
+      .insights-grid { grid-template-columns: 1fr; }
+      .insights-summary { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .mobile-nav {
         position: fixed;
         left: 12px;
@@ -1021,7 +1089,7 @@
         bottom: 12px;
         z-index: 50;
         display: grid;
-        grid-template-columns: repeat(6, 1fr);
+        grid-template-columns: repeat(7, 1fr);
         padding: 7px;
         border: 1px solid var(--line);
         border-radius: 18px;
@@ -1066,6 +1134,10 @@
       .calendar-day { min-height: 79px; padding: 4px; }
       .day-number { width: 21px; height: 21px; margin-bottom: 3px; font-size: 10px; }
       .calendar-task { padding: 4px; border-left-width: 2px; font-size: 9px; }
+      .daily-thought { align-items: flex-start; flex-wrap: wrap; }
+      .thought-body { min-width: calc(100% - 52px); }
+      .thought-author { display: block; margin: 4px 0 0; }
+      .thought-button { margin-left: 51px; }
       .health-hero { display: block; padding: 19px; }
       .health-date { display: block; margin-top: 12px; }
       .health-summary { gap: 8px; }
@@ -1073,6 +1145,11 @@
       .health-metric-value { font-size: 28px; }
       .health-form, .health-form.exercise-form { grid-template-columns: minmax(0, 1fr) 92px auto; }
       .health-form.exercise-form input[name="calories"] { grid-column: 1 / 3; }
+      .insights-header { display: block; padding: 19px; }
+      .period-switch { margin-top: 14px; }
+      .insights-summary { gap: 8px; }
+      .insight-metric { padding: 15px; }
+      .insight-metric-value { font-size: 27px; }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -1098,6 +1175,7 @@
         <li><button class="nav-button" data-view="calendar"><svg class="icon" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M8 3v4M16 3v4M3 10h18M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01"/></svg><span>Calendar</span></button></li>
         <li><button class="nav-button" data-view="completed"><svg class="icon" viewBox="0 0 24 24"><path d="M4 12.5 9 17l11-11"/></svg><span>Completed</span><span class="count" data-count="completed">0</span></button></li>
         <li><button class="nav-button" data-view="health"><svg class="icon" viewBox="0 0 24 24"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8Z"/><path d="M7 12h2l1.2-2.5 2.2 5 1.2-2.5H17"/></svg><span>Health</span></button></li>
+        <li><button class="nav-button" data-view="insights"><svg class="icon" viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg><span>Insights</span></button></li>
       </ul>
 
       <div class="sidebar-foot">
@@ -1173,6 +1251,18 @@
             <div><div class="stat-number" id="progressStat">0/0</div><div class="progress-mini"><span id="progressBar"></span></div></div>
           </article>
         </section>
+
+        <aside class="daily-thought" id="dailyThought" aria-label="Philosophy or psychology quote of the day">
+          <span class="thought-mark" aria-hidden="true">“</span>
+          <div class="thought-body">
+            <span class="thought-label" id="thoughtDiscipline">Psychology</span>
+            <blockquote class="thought-text"><span id="thoughtText">My experience is what I agree to attend to.</span><cite class="thought-author" id="thoughtAuthor">— William James</cite></blockquote>
+          </div>
+          <button class="thought-button" id="nextThought" type="button" title="Show another quote">
+            <svg class="icon" viewBox="0 0 24 24"><path d="M16 3h5v5M4 20 21 3M21 16v5h-5M15 15l6 6M4 4l5 5"/></svg>
+            <span>Another quote</span>
+          </button>
+        </aside>
 
         <form class="quick-add" id="quickAddForm">
           <input id="quickTaskInput" type="text" placeholder="What needs to get done?" autocomplete="off" required aria-label="New task title" />
@@ -1292,6 +1382,59 @@
             </article>
           </div>
         </section>
+
+        <section class="insights-section" id="insightsSection" aria-labelledby="insightsTitle" hidden>
+          <header class="insights-header">
+            <div>
+              <h2 id="insightsTitle">Your patterns</h2>
+              <p id="insightsRange">A clear look at where your time and energy went.</p>
+            </div>
+            <div class="period-switch" aria-label="Insights period">
+              <button class="period-button active" type="button" data-insights-period="week">Week</button>
+              <button class="period-button" type="button" data-insights-period="month">Month</button>
+              <button class="period-button" type="button" data-insights-period="quarter">Quarter</button>
+            </div>
+          </header>
+
+          <div class="insights-summary" aria-label="Period totals">
+            <article class="insight-metric">
+              <span class="insight-metric-label">Task time tracked</span>
+              <span class="insight-metric-value" id="insightTaskTime">0m</span>
+            </article>
+            <article class="insight-metric">
+              <span class="insight-metric-label">Tasks completed</span>
+              <span class="insight-metric-value" id="insightCompleted">0</span>
+            </article>
+            <article class="insight-metric">
+              <span class="insight-metric-label">Exercise time</span>
+              <span class="insight-metric-value" id="insightExerciseTime">0</span><span class="insight-metric-unit">min</span>
+            </article>
+            <article class="insight-metric">
+              <span class="insight-metric-label">Exercise calories</span>
+              <span class="insight-metric-value" id="insightExerciseCalories">0</span><span class="insight-metric-unit">kcal</span>
+            </article>
+          </div>
+
+          <div class="insights-grid">
+            <article class="insight-panel">
+              <header class="insight-panel-head"><h3>Where your task time went</h3><p>Based on the timer sessions recorded for each task.</p></header>
+              <div class="category-bars" id="insightCategoryBars"></div>
+              <ul class="insight-list" id="insightTaskList"></ul>
+              <div class="insight-empty" id="insightTaskEmpty">Start a task timer to build your time breakdown.</div>
+            </article>
+
+            <article class="insight-panel">
+              <header class="insight-panel-head"><h3>Exercise & nutrition</h3><p>Totals from the entries in your Health tab.</p></header>
+              <div class="nutrition-totals">
+                <div class="nutrition-total"><strong id="insightCaloriesIn">0</strong><span>Calories in</span></div>
+                <div class="nutrition-total"><strong id="insightCaloriesOut">0</strong><span>Exercise kcal</span></div>
+                <div class="nutrition-total"><strong id="insightNetCalories">0</strong><span>Net calories</span></div>
+              </div>
+              <ul class="insight-list" id="insightExerciseList"></ul>
+              <div class="insight-empty" id="insightExerciseEmpty">Log an exercise to see your activity breakdown.</div>
+            </article>
+          </div>
+        </section>
       </div>
     </main>
   </div>
@@ -1303,6 +1446,7 @@
     <button class="nav-button" data-view="calendar" aria-label="Calendar"><svg class="icon" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M8 3v4M16 3v4M3 10h18M8 14h.01M12 14h.01M16 14h.01"/></svg><span>Calendar</span></button>
     <button class="nav-button" data-view="completed" aria-label="Completed"><svg class="icon" viewBox="0 0 24 24"><path d="M4 12.5 9 17l11-11"/></svg><span>Done</span></button>
     <button class="nav-button" data-view="health" aria-label="Health"><svg class="icon" viewBox="0 0 24 24"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8Z"/><path d="M7 12h2l1.2-2.5 2.2 5 1.2-2.5H17"/></svg><span>Health</span></button>
+    <button class="nav-button" data-view="insights" aria-label="Insights"><svg class="icon" viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg><span>Insights</span></button>
   </nav>
 
   <dialog id="taskDialog">
@@ -1433,6 +1577,7 @@
       const HEALTH_KEY = 'daylight.health.v1';
       const THEME_KEY = 'daylight.theme.v1';
       const FACT_CHOICE_KEY = 'daylight.fact.choice.v1';
+      const QUOTE_CHOICE_KEY = 'daylight.quote.choice.v1';
       const CLOUD_OWNER_KEY = 'daylight.cloud.owner.v1';
       const CLOUD_PENDING_KEY = 'daylight.cloud.pending.v1';
       const SUPABASE_URL = 'https://rwijpwtjctwkyyokslzx.supabase.co';
@@ -1489,7 +1634,40 @@
         { discipline: 'Botany', fact: 'The world’s smallest flowering plants, watermeal, can be smaller than a grain of rice.' },
         { discipline: 'Physics', fact: 'At sea level, air presses on every square metre with a force roughly equal to ten tonnes of weight.' }
       ];
+      const dailyQuotes = [
+        { discipline: 'Psychology', quote: 'My experience is what I agree to attend to.', author: 'William James' },
+        { discipline: 'Philosophy', quote: 'The unexamined life is not worth living.', author: 'Socrates, in Plato’s Apology' },
+        { discipline: 'Philosophy', quote: 'Some things are in our control and others not.', author: 'Epictetus' },
+        { discipline: 'Psychology', quote: 'Psychology has a long past, but only a short history.', author: 'Hermann Ebbinghaus' },
+        { discipline: 'Philosophy', quote: 'He who knows only his own side of the case knows little of that.', author: 'John Stuart Mill' },
+        { discipline: 'Psychology', quote: 'There is nothing so practical as a good theory.', author: 'Kurt Lewin' },
+        { discipline: 'Philosophy', quote: 'I think, therefore I am.', author: 'René Descartes' },
+        { discipline: 'Psychology', quote: 'The curious paradox is that when I accept myself just as I am, then I can change.', author: 'Carl Rogers' },
+        { discipline: 'Philosophy', quote: 'The heart has its reasons which reason knows nothing of.', author: 'Blaise Pascal' },
+        { discipline: 'Psychology', quote: 'What a man can be, he must be.', author: 'Abraham Maslow' },
+        { discipline: 'Philosophy', quote: 'While we are postponing, life speeds by.', author: 'Seneca' },
+        { discipline: 'Psychology', quote: 'The ego is not master in its own house.', author: 'Sigmund Freud' },
+        { discipline: 'Philosophy', quote: 'Nothing great was ever achieved without enthusiasm.', author: 'Ralph Waldo Emerson' },
+        { discipline: 'Psychology', quote: 'Intelligence is what you use when you do not know what to do.', author: 'Jean Piaget' },
+        { discipline: 'Philosophy', quote: 'Life can only be understood backwards; but it must be lived forwards.', author: 'Søren Kierkegaard' },
+        { discipline: 'Psychology', quote: 'The real problem is not whether machines think but whether men do.', author: 'B. F. Skinner' },
+        { discipline: 'Philosophy', quote: 'No man is free who is not master of himself.', author: 'Epictetus' },
+        { discipline: 'Psychology', quote: 'Nothing in life is as important as you think it is while you are thinking about it.', author: 'Daniel Kahneman' },
+        { discipline: 'Philosophy', quote: 'The beginning is the most important part of the work.', author: 'Plato' },
+        { discipline: 'Philosophy', quote: 'The greatest happiness of the greatest number is the foundation of morals and legislation.', author: 'Jeremy Bentham' },
+        { discipline: 'Philosophy', quote: 'I do not wish women to have power over men; but over themselves.', author: 'Mary Wollstonecraft' },
+        { discipline: 'Psychology', quote: 'When we can no longer change a situation, we are challenged to change ourselves.', author: 'Viktor Frankl' },
+        { discipline: 'Philosophy', quote: 'Reason is, and ought only to be, the slave of the passions.', author: 'David Hume' },
+        { discipline: 'Philosophy', quote: 'Man is born free, and everywhere he is in chains.', author: 'Jean-Jacques Rousseau' },
+        { discipline: 'Philosophy', quote: 'The mass of men lead lives of quiet desperation.', author: 'Henry David Thoreau' },
+        { discipline: 'Psychology', quote: 'The good life is a process, not a state of being.', author: 'Carl Rogers' },
+        { discipline: 'Philosophy', quote: 'My trade and art is to live.', author: 'Michel de Montaigne' },
+        { discipline: 'Philosophy', quote: 'Knowledge itself is power.', author: 'Francis Bacon' },
+        { discipline: 'Philosophy', quote: 'One cannot step twice in the same river.', author: 'Heraclitus' },
+        { discipline: 'Psychology', quote: 'A failure is not always a mistake; it may simply be the best one can do.', author: 'B. F. Skinner' }
+      ];
       let currentFactIndex = 0;
+      let currentQuoteIndex = 0;
 
       const plusDays = (amount) => {
         const date = new Date();
@@ -1512,6 +1690,7 @@
         view: 'today',
         query: '',
         sort: 'deadline',
+        insightsPeriod: 'week',
         calendarDate: new Date(new Date().getFullYear(), new Date().getMonth(), 1),
         lastDeleted: null,
         toastTimer: null
@@ -1531,7 +1710,9 @@
         listSection: document.getElementById('listSection'),
         calendarSection: document.getElementById('calendarSection'),
         healthSection: document.getElementById('healthSection'),
+        insightsSection: document.getElementById('insightsSection'),
         taskStats: document.getElementById('taskStats'),
+        dailyThought: document.getElementById('dailyThought'),
         calendarGrid: document.getElementById('calendarGrid'),
         calendarMonth: document.getElementById('calendarMonth'),
         sortControl: document.getElementById('sortControl'),
@@ -1552,6 +1733,11 @@
         exerciseLog: document.getElementById('exerciseLog'),
         foodEmpty: document.getElementById('foodEmpty'),
         exerciseEmpty: document.getElementById('exerciseEmpty'),
+        insightCategoryBars: document.getElementById('insightCategoryBars'),
+        insightTaskList: document.getElementById('insightTaskList'),
+        insightTaskEmpty: document.getElementById('insightTaskEmpty'),
+        insightExerciseList: document.getElementById('insightExerciseList'),
+        insightExerciseEmpty: document.getElementById('insightExerciseEmpty'),
         taskDialog: document.getElementById('taskDialog'),
         taskForm: document.getElementById('taskForm'),
         dialogTitle: document.getElementById('dialogTitle'),
@@ -1848,7 +2034,20 @@
 
       function pauseTimer(task) {
         if (!task?.timerRunningSince) return;
-        task.actualSeconds = elapsedSeconds(task);
+        const endedAt = new Date();
+        const startedAt = new Date(task.timerRunningSince);
+        const sessionSeconds = Math.max(0, (endedAt.getTime() - startedAt.getTime()) / 1000);
+        task.actualSeconds = Number(task.actualSeconds || 0) + sessionSeconds;
+        if (sessionSeconds >= 1) {
+          if (!Array.isArray(task.timeSessions)) task.timeSessions = [];
+          task.timeSessions.push({
+            id: makeId(),
+            date: dateToISO(endedAt),
+            startedAt: startedAt.toISOString(),
+            endedAt: endedAt.toISOString(),
+            seconds: sessionSeconds
+          });
+        }
         task.timerRunningSince = null;
         touchTask(task);
       }
@@ -1884,6 +2083,7 @@
           const task = state.tasks.find(item => item.id === els.taskId.value);
           if (task) els.timerActual.textContent = formatElapsed(elapsedSeconds(task));
         }
+        if (state.view === 'insights') renderInsights();
       }
 
       function getFilteredTasks() {
@@ -1976,16 +2176,128 @@
         showToast(`${entry.name} removed from today’s health log`);
       }
 
+      function currentPeriodBounds(period) {
+        const today = new Date();
+        const day = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+        let start;
+        let end;
+        if (period === 'week') {
+          const mondayOffset = (day.getDay() + 6) % 7;
+          start = new Date(day.getFullYear(), day.getMonth(), day.getDate() - mondayOffset);
+          end = new Date(start.getFullYear(), start.getMonth(), start.getDate() + 6);
+        } else if (period === 'quarter') {
+          const quarterMonth = Math.floor(day.getMonth() / 3) * 3;
+          start = new Date(day.getFullYear(), quarterMonth, 1);
+          end = new Date(day.getFullYear(), quarterMonth + 3, 0);
+        } else {
+          start = new Date(day.getFullYear(), day.getMonth(), 1);
+          end = new Date(day.getFullYear(), day.getMonth() + 1, 0);
+        }
+        return { start, end, startISO: dateToISO(start), endISO: dateToISO(end) };
+      }
+
+      function isDateInRange(date, bounds) {
+        return Boolean(date && date >= bounds.startISO && date <= bounds.endISO);
+      }
+
+      function compactDuration(seconds) {
+        const totalMinutes = Math.floor(Math.max(0, Number(seconds) || 0) / 60);
+        if (totalMinutes < 1) return 'under 1m';
+        const hours = Math.floor(totalMinutes / 60);
+        const minutes = totalMinutes % 60;
+        return hours ? `${hours}h${minutes ? ` ${minutes}m` : ''}` : `${minutes}m`;
+      }
+
+      function taskDatedTime(task) {
+        const sessions = Array.isArray(task.timeSessions) ? task.timeSessions : [];
+        const entries = sessions.map(session => ({
+          date: session.date || session.endedAt?.slice(0, 10) || task.completedOn || task.due || task.createdAt?.slice(0, 10),
+          seconds: Math.max(0, Number(session.seconds || 0))
+        }));
+        const sessionTotal = entries.reduce((sum, entry) => sum + entry.seconds, 0);
+        const legacySeconds = Math.max(0, Number(task.actualSeconds || 0) - sessionTotal);
+        if (legacySeconds >= 1) {
+          entries.push({ date: task.completedOn || task.due || task.createdAt?.slice(0, 10) || todayISO(), seconds: legacySeconds });
+        }
+        if (task.timerRunningSince) {
+          entries.push({
+            date: todayISO(),
+            seconds: Math.max(0, (Date.now() - new Date(task.timerRunningSince).getTime()) / 1000)
+          });
+        }
+        return entries;
+      }
+
+      function renderInsights() {
+        const bounds = currentPeriodBounds(state.insightsPeriod);
+        const dateFormat = new Intl.DateTimeFormat(undefined, { month: 'short', day: 'numeric' });
+        const yearSuffix = bounds.start.getFullYear() !== bounds.end.getFullYear() ? `, ${bounds.end.getFullYear()}` : '';
+        document.getElementById('insightsRange').textContent = `${dateFormat.format(bounds.start)} – ${dateFormat.format(bounds.end)}${yearSuffix}`;
+
+        const taskTimes = state.tasks.map(task => ({
+          task,
+          seconds: taskDatedTime(task).filter(entry => isDateInRange(entry.date, bounds)).reduce((sum, entry) => sum + entry.seconds, 0)
+        })).filter(item => item.seconds >= 1).sort((a, b) => b.seconds - a.seconds);
+        const totalTaskSeconds = taskTimes.reduce((sum, item) => sum + item.seconds, 0);
+        const completedTasks = state.tasks.filter(task => isDateInRange(task.completedOn || task.completedAt?.slice(0, 10), bounds)).length;
+        const periodHealth = state.healthEntries.filter(entry => isDateInRange(entry.date, bounds));
+        const foodEntries = periodHealth.filter(entry => entry.type === 'food');
+        const exerciseEntries = periodHealth.filter(entry => entry.type === 'exercise');
+        const exerciseMinutes = exerciseEntries.reduce((sum, entry) => sum + Number(entry.minutes || 0), 0);
+        const exerciseCalories = exerciseEntries.reduce((sum, entry) => sum + Number(entry.calories || 0), 0);
+        const caloriesIn = foodEntries.reduce((sum, entry) => sum + Number(entry.calories || 0), 0);
+
+        document.getElementById('insightTaskTime').textContent = totalTaskSeconds ? compactDuration(totalTaskSeconds) : '0m';
+        document.getElementById('insightCompleted').textContent = completedTasks.toLocaleString();
+        document.getElementById('insightExerciseTime').textContent = Math.round(exerciseMinutes).toLocaleString();
+        document.getElementById('insightExerciseCalories').textContent = Math.round(exerciseCalories).toLocaleString();
+        document.getElementById('insightCaloriesIn').textContent = Math.round(caloriesIn).toLocaleString();
+        document.getElementById('insightCaloriesOut').textContent = Math.round(exerciseCalories).toLocaleString();
+        document.getElementById('insightNetCalories').textContent = Math.round(caloriesIn - exerciseCalories).toLocaleString();
+
+        const categories = new Map();
+        taskTimes.forEach(({ task, seconds }) => categories.set(task.category || 'Other', (categories.get(task.category || 'Other') || 0) + seconds));
+        els.insightCategoryBars.innerHTML = [...categories.entries()].sort((a, b) => b[1] - a[1]).map(([category, seconds]) => `
+          <div class="category-row">
+            <div class="category-bar-head"><span>${escapeHTML(category)}</span><span>${compactDuration(seconds)}</span></div>
+            <div class="category-track"><span style="width:${totalTaskSeconds ? Math.max(2, (seconds / totalTaskSeconds) * 100) : 0}%"></span></div>
+          </div>`).join('');
+        els.insightTaskList.innerHTML = taskTimes.map(({ task, seconds }) => `
+          <li class="insight-row"><span><strong>${escapeHTML(task.title)}</strong><small>${escapeHTML(task.category || 'Other')}</small></span><span class="insight-row-value">${compactDuration(seconds)}</span></li>`).join('');
+        els.insightTaskEmpty.hidden = taskTimes.length > 0;
+
+        const activities = new Map();
+        exerciseEntries.forEach(entry => {
+          const key = entry.name.trim().toLowerCase();
+          const activity = activities.get(key) || { name: entry.name.trim(), minutes: 0, calories: 0 };
+          activity.minutes += Number(entry.minutes || 0);
+          activity.calories += Number(entry.calories || 0);
+          activities.set(key, activity);
+        });
+        const activityList = [...activities.values()].sort((a, b) => b.calories - a.calories || b.minutes - a.minutes);
+        els.insightExerciseList.innerHTML = activityList.map(activity => `
+          <li class="insight-row"><span><strong>${escapeHTML(activity.name)}</strong><small>${Math.round(activity.minutes).toLocaleString()} minutes</small></span><span class="insight-row-value">${Math.round(activity.calories).toLocaleString()} kcal</span></li>`).join('');
+        els.insightExerciseEmpty.hidden = activityList.length > 0;
+      }
+
       function render() {
         const tasks = getFilteredTasks();
         const isCalendar = state.view === 'calendar';
         const isHealth = state.view === 'health';
-        els.listSection.hidden = isCalendar || isHealth;
+        const isInsights = state.view === 'insights';
+        els.listSection.hidden = isCalendar || isHealth || isInsights;
         els.calendarSection.hidden = !isCalendar;
         els.healthSection.hidden = !isHealth;
-        els.taskStats.hidden = isHealth;
-        els.quickAddForm.hidden = isHealth;
-        els.sortControl.classList.toggle('show', state.view === 'all' && !isHealth);
+        els.insightsSection.hidden = !isInsights;
+        els.taskStats.hidden = isHealth || isInsights;
+        els.dailyThought.hidden = state.view !== 'today';
+        els.quickAddForm.hidden = isHealth || isInsights;
+        els.sortControl.classList.toggle('show', state.view === 'all' && !isHealth && !isInsights);
+        if (isInsights) {
+          renderInsights();
+          updateCounts();
+          return;
+        }
         if (isHealth) {
           renderHealth();
           updateCounts();
@@ -2150,6 +2462,7 @@
           completedAt: null,
           actualSeconds: 0,
           timerRunningSince: null,
+          timeSessions: [],
           createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString()
         });
@@ -2323,6 +2636,17 @@
         }
       }
 
+      function showDailyQuote(index, remember = false) {
+        currentQuoteIndex = ((index % dailyQuotes.length) + dailyQuotes.length) % dailyQuotes.length;
+        const selectedQuote = dailyQuotes[currentQuoteIndex];
+        document.getElementById('thoughtDiscipline').textContent = selectedQuote.discipline;
+        document.getElementById('thoughtText').textContent = selectedQuote.quote;
+        document.getElementById('thoughtAuthor').textContent = `— ${selectedQuote.author}`;
+        if (remember) {
+          localStorage.setItem(QUOTE_CHOICE_KEY, JSON.stringify({ date: todayISO(), index: currentQuoteIndex }));
+        }
+      }
+
       function initialiseDate() {
         const date = new Date();
         const hour = date.getHours();
@@ -2330,14 +2654,23 @@
         document.getElementById('dateEyebrow').textContent = new Intl.DateTimeFormat(undefined, { weekday: 'long', month: 'long', day: 'numeric' }).format(date);
         const dateNumber = Math.floor(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()) / 86400000);
         let factIndex = dateNumber % dailyFacts.length;
+        let quoteIndex = (dateNumber * 7 + 3) % dailyQuotes.length;
         try {
           const savedChoice = JSON.parse(localStorage.getItem(FACT_CHOICE_KEY));
           if (savedChoice?.date === todayISO() && Number.isInteger(savedChoice.index)) factIndex = savedChoice.index;
+          const savedQuote = JSON.parse(localStorage.getItem(QUOTE_CHOICE_KEY));
+          if (savedQuote?.date === todayISO() && Number.isInteger(savedQuote.index)) quoteIndex = savedQuote.index;
         } catch {}
         showDailyFact(factIndex);
+        showDailyQuote(quoteIndex);
       }
 
       document.querySelectorAll('.nav-button[data-view]').forEach(button => button.addEventListener('click', () => setView(button.dataset.view)));
+      document.querySelectorAll('[data-insights-period]').forEach(button => button.addEventListener('click', () => {
+        state.insightsPeriod = button.dataset.insightsPeriod;
+        document.querySelectorAll('[data-insights-period]').forEach(item => item.classList.toggle('active', item === button));
+        renderInsights();
+      }));
       document.getElementById('newTaskTop').addEventListener('click', () => openDialog());
       document.getElementById('notificationToggle').addEventListener('click', enableNotifications);
       document.getElementById('closeDialog').addEventListener('click', closeDialog);
@@ -2348,6 +2681,11 @@
         let nextIndex = currentFactIndex;
         while (nextIndex === currentFactIndex) nextIndex = Math.floor(Math.random() * dailyFacts.length);
         showDailyFact(nextIndex, true);
+      });
+      document.getElementById('nextThought').addEventListener('click', () => {
+        let nextIndex = currentQuoteIndex;
+        while (nextIndex === currentQuoteIndex) nextIndex = Math.floor(Math.random() * dailyQuotes.length);
+        showDailyQuote(nextIndex, true);
       });
       document.getElementById('askChatGPT').addEventListener('click', () => {
         const selectedFact = dailyFacts[currentFactIndex];
@@ -2502,6 +2840,7 @@
         if (!task) return;
         task.actualSeconds = 0;
         task.timerRunningSince = null;
+        task.timeSessions = [];
         touchTask(task);
         saveTasks();
         els.timerActual.textContent = '00:00';
