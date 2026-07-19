@@ -323,11 +323,44 @@
       line-height: 0.98;
     }
 
+    .daily-fact {
+      max-width: 410px;
+      margin: 0 0 2px;
+      padding: 14px 16px 15px;
+      border: 1px solid var(--line-soft);
+      border-radius: 16px;
+      background: color-mix(in srgb, var(--surface) 76%, transparent);
+    }
+
+    .fact-meta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 6px;
+      color: var(--accent);
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .fact-meta::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: currentColor;
+      box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 13%, transparent);
+    }
+
+    .fact-discipline { color: var(--muted); }
+    .fact-discipline::before { content: '\00B7'; margin-right: 8px; }
+
     .hero-copy {
-      max-width: 380px;
-      margin: 0 0 4px;
+      margin: 0;
       color: var(--muted);
-      line-height: 1.65;
+      font-size: 13px;
+      line-height: 1.55;
     }
 
     .stats-grid {
@@ -905,7 +938,8 @@
       #newTaskTop { width: 44px; min-width: 44px; padding: 0; }
       .hero-row { display: block; }
       h1 { font-size: 50px; }
-      .hero-copy { margin-top: 16px; font-size: 14px; }
+      .daily-fact { max-width: none; margin-top: 18px; }
+      .hero-copy { font-size: 13px; }
       .stats-grid { grid-template-columns: 1fr 1fr; }
       .stat-card { min-height: 126px; padding: 18px; }
       .focus-card { min-height: 120px; }
@@ -998,7 +1032,10 @@
             <p class="eyebrow" id="dateEyebrow"></p>
             <h1 id="pageTitle">Good morning.</h1>
           </div>
-          <p class="hero-copy" id="heroCopy">A clear day starts with one small decision. Choose what matters, then let the rest wait.</p>
+          <aside class="daily-fact" aria-label="Academic fact of the day">
+            <div class="fact-meta"><span>Today’s rare fact</span><span class="fact-discipline" id="factDiscipline">Astronomy</span></div>
+            <p class="hero-copy" id="heroCopy">A day on Venus lasts longer than a year on Venus.</p>
+          </aside>
         </section>
 
         <section class="stats-grid" aria-label="Daily summary">
@@ -1223,6 +1260,51 @@
         const offset = now.getTimezoneOffset();
         return new Date(now.getTime() - offset * 60000).toISOString().slice(0, 10);
       };
+
+      const dailyFacts = [
+        { discipline: 'Astronomy', fact: 'Venus takes about 243 Earth days to rotate once, but only about 225 Earth days to orbit the Sun.' },
+        { discipline: 'Biology', fact: 'An octopus has three hearts, and its copper-based blood appears blue.' },
+        { discipline: 'Mathematics', fact: 'The repeating decimal 0.999… is exactly equal to 1, not merely close to it.' },
+        { discipline: 'History', fact: 'Teaching existed at Oxford by 1096—more than two centuries before Tenochtitlan was founded.' },
+        { discipline: 'Geology', fact: 'Antarctica is classified as a desert because it receives so little precipitation.' },
+        { discipline: 'Chemistry', fact: 'Gallium melts at about 29.8°C, so a piece of it can melt in a warm hand.' },
+        { discipline: 'Linguistics', fact: 'Some languages rely on compass directions instead of words equivalent to left and right.' },
+        { discipline: 'Physics', fact: 'GPS satellites need corrections from both special and general relativity to stay accurate.' },
+        { discipline: 'Zoology', fact: 'Wombats produce cube-shaped droppings, formed by uneven elasticity in their intestines.' },
+        { discipline: 'Astronomy', fact: 'The Moon is moving away from Earth by about 3.8 centimetres each year.' },
+        { discipline: 'Computing', fact: 'The first webcam watched a coffee pot at the University of Cambridge.' },
+        { discipline: 'Botany', fact: 'Bananas are botanical berries, while strawberries are aggregate accessory fruits.' },
+        { discipline: 'History', fact: 'Cleopatra lived closer in time to the Moon landing than to the building of the Great Pyramid.' },
+        { discipline: 'Physics', fact: 'Sound travels more than four times faster through water than through air.' },
+        { discipline: 'Biology', fact: 'Fungi are evolutionarily more closely related to animals than to plants.' },
+        { discipline: 'Mathematics', fact: 'A Möbius strip has only one continuous side and one continuous boundary.' },
+        { discipline: 'Astronomy', fact: 'Sunsets on Mars appear bluish near the Sun because of how fine dust scatters light.' },
+        { discipline: 'Neuroscience', fact: 'Your brain fills in the missing visual information at each eye’s natural blind spot.' },
+        { discipline: 'Archaeology', fact: 'Some woolly mammoths survived on Wrangel Island until roughly 4,000 years ago.' },
+        { discipline: 'Chemistry', fact: 'Helium was detected in the Sun’s spectrum before it was found on Earth.' },
+        { discipline: 'Ecology', fact: 'Marine phytoplankton are responsible for roughly half of Earth’s oxygen production.' },
+        { discipline: 'Astronomy', fact: 'One solar day on Mercury—from noon to noon—lasts 176 Earth days.' },
+        { discipline: 'History', fact: 'Alexander Bain patented an early fax-machine design in 1843, decades before the telephone.' },
+        { discipline: 'Biology', fact: 'Axolotls can regenerate entire limbs and repair parts of several internal organs.' },
+        { discipline: 'Mathematics', fact: 'There are infinitely many sizes of infinity; the real numbers form a larger infinity than the integers.' },
+        { discipline: 'Materials science', fact: 'Old window glass is not slowly flowing; glass is an amorphous solid.' },
+        { discipline: 'Zoology', fact: 'Greenland sharks can live for centuries, making them the longest-lived known vertebrates.' },
+        { discipline: 'Astronomy', fact: 'Sunlight takes about eight minutes and twenty seconds to reach Earth.' },
+        { discipline: 'Linguistics', fact: 'Sign languages have their own grammars and are not simply spoken languages acted out by hand.' },
+        { discipline: 'Physics', fact: 'A lightning channel can become several times hotter than the surface of the Sun.' },
+        { discipline: 'Computing', fact: 'The QR code was invented in 1994 to track automotive parts during manufacturing.' },
+        { discipline: 'Biology', fact: 'Some tardigrades have survived direct exposure to the vacuum of space.' },
+        { discipline: 'Geoscience', fact: 'Tectonic plates typically move at rates comparable to the growth of human fingernails.' },
+        { discipline: 'Mathematics', fact: 'The number 1729 is the smallest number expressible as two positive cubes in two different ways.' },
+        { discipline: 'Astronomy', fact: 'Neptune takes nearly 165 Earth years to complete one orbit of the Sun.' },
+        { discipline: 'Biology', fact: 'Bees encode the direction and distance of food in the angle and duration of a waggle dance.' },
+        { discipline: 'History of science', fact: 'The word “scientist” was coined in the 1830s; before then, researchers were often called natural philosophers.' },
+        { discipline: 'Chemistry', fact: 'Water expands when it freezes because hydrogen bonds arrange molecules into a more open structure.' },
+        { discipline: 'Neuroscience', fact: 'Although it is only about 2% of body mass, the adult brain uses roughly 20% of resting energy.' },
+        { discipline: 'Astronomy', fact: 'Saturn’s average density is lower than water’s, even though no ocean could actually hold the planet.' },
+        { discipline: 'Botany', fact: 'The world’s smallest flowering plants, watermeal, can be smaller than a grain of rice.' },
+        { discipline: 'Physics', fact: 'At sea level, air presses on every square metre with a force roughly equal to ten tonnes of weight.' }
+      ];
 
       const plusDays = (amount) => {
         const date = new Date();
@@ -1932,6 +2014,10 @@
         const hour = date.getHours();
         document.getElementById('pageTitle').textContent = hour < 12 ? 'Good morning.' : hour < 18 ? 'Good afternoon.' : 'Good evening.';
         document.getElementById('dateEyebrow').textContent = new Intl.DateTimeFormat(undefined, { weekday: 'long', month: 'long', day: 'numeric' }).format(date);
+        const dateNumber = Math.floor(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()) / 86400000);
+        const dailyFact = dailyFacts[dateNumber % dailyFacts.length];
+        document.getElementById('factDiscipline').textContent = dailyFact.discipline;
+        document.getElementById('heroCopy').textContent = dailyFact.fact;
       }
 
       document.querySelectorAll('.nav-button[data-view]').forEach(button => button.addEventListener('click', () => setView(button.dataset.view)));
