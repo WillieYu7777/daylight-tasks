@@ -28,6 +28,7 @@
     }
 
     * { box-sizing: border-box; }
+    [hidden] { display: none !important; }
 
     html { scroll-behavior: smooth; }
 
@@ -363,6 +364,36 @@
       line-height: 1.55;
     }
 
+    .fact-actions {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      margin-top: 11px;
+    }
+
+    .fact-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      min-height: 30px;
+      padding: 0 10px;
+      border: 1px solid var(--line);
+      border-radius: 9px;
+      background: transparent;
+      color: var(--muted);
+      font: inherit;
+      font-size: 10px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: color 160ms ease, background 160ms ease, border-color 160ms ease, transform 160ms ease;
+    }
+
+    .fact-button .icon { width: 13px; height: 13px; }
+    .fact-button:hover { color: var(--ink); background: var(--line-soft); transform: translateY(-1px); }
+    .fact-button:active { transform: translateY(0); }
+    .fact-button.chatgpt { margin-left: auto; color: var(--ink); }
+
     .stats-grid {
       display: grid;
       grid-template-columns: 1.45fr 1fr 1fr;
@@ -670,6 +701,76 @@
     .empty-state h3 { margin: 0 0 7px; font-size: 18px; }
     .empty-state p { margin: 0; color: var(--muted); font-size: 13px; }
 
+    .health-section { display: grid; gap: 18px; }
+
+    .health-hero {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 24px;
+      padding: 24px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      background: var(--surface);
+    }
+
+    .health-hero h2 { margin: 0 0 5px; font-size: 25px; letter-spacing: -0.035em; }
+    .health-hero p { max-width: 570px; margin: 0; color: var(--muted); font-size: 12px; line-height: 1.55; }
+    .health-date { flex-shrink: 0; color: var(--accent); font-size: 11px; font-weight: 850; letter-spacing: 0.08em; text-transform: uppercase; }
+
+    .health-summary {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .health-metric {
+      min-width: 0;
+      padding: 19px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      background: var(--surface);
+    }
+
+    .health-metric-label { display: block; margin-bottom: 14px; color: var(--muted); font-size: 10px; font-weight: 850; letter-spacing: 0.08em; text-transform: uppercase; }
+    .health-metric-value { font-family: Georgia, "Times New Roman", serif; font-size: 32px; line-height: 1; }
+    .health-metric-unit { margin-left: 4px; color: var(--muted); font-family: Inter, ui-sans-serif, sans-serif; font-size: 10px; }
+    .health-metric.net { border-color: var(--ink); background: var(--ink); color: var(--surface); }
+    .health-metric.net .health-metric-label, .health-metric.net .health-metric-unit { color: currentColor; opacity: 0.7; }
+
+    .health-panels { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+    .health-panel { overflow: hidden; border: 1px solid var(--line); border-radius: var(--radius-lg); background: var(--surface); }
+
+    .health-panel-head {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      padding: 19px 20px;
+      border-bottom: 1px solid var(--line-soft);
+    }
+
+    .health-panel-icon { display: grid; place-items: center; width: 36px; height: 36px; border-radius: 11px; background: var(--accent-soft); color: var(--accent); }
+    .health-panel.exercise .health-panel-icon { background: var(--mint); color: var(--mint-strong); }
+    .health-panel-icon .icon { width: 18px; height: 18px; }
+    .health-panel-head h3 { margin: 0 0 2px; font-size: 16px; }
+    .health-panel-head p { margin: 0; color: var(--muted); font-size: 10px; }
+
+    .health-form { display: grid; grid-template-columns: minmax(0, 1fr) 104px auto; gap: 8px; padding: 14px; border-bottom: 1px solid var(--line-soft); }
+    .health-form.exercise-form { grid-template-columns: minmax(0, 1fr) 82px 96px auto; }
+    .health-form input { min-width: 0; height: 40px; padding: 0 11px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface-strong); color: var(--ink); font-size: 12px; }
+    .health-form input::placeholder { color: var(--muted); }
+    .health-form button { width: 40px; min-width: 40px; min-height: 40px; padding: 0; border-radius: 10px; box-shadow: none; }
+
+    .health-log { list-style: none; margin: 0; padding: 0; }
+    .health-entry { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; align-items: center; gap: 10px; padding: 13px 17px; border-bottom: 1px solid var(--line-soft); }
+    .health-entry:last-child { border-bottom: 0; }
+    .health-entry-name { min-width: 0; overflow: hidden; font-size: 12px; font-weight: 750; text-overflow: ellipsis; white-space: nowrap; }
+    .health-entry-detail { color: var(--muted); font-size: 10px; font-variant-numeric: tabular-nums; }
+    .health-delete { display: grid; place-items: center; width: 28px; height: 28px; padding: 0; border: 0; border-radius: 8px; background: transparent; color: var(--muted); cursor: pointer; }
+    .health-delete:hover { background: var(--line-soft); color: var(--red); }
+    .health-delete .icon { width: 14px; height: 14px; }
+    .health-empty { padding: 28px 18px; color: var(--muted); font-size: 11px; text-align: center; }
+
     .calendar-section {
       border: 1px solid var(--line);
       border-radius: var(--radius-lg);
@@ -911,6 +1012,8 @@
       .topbar { margin-bottom: 34px; }
       .stats-grid { grid-template-columns: 1fr 1fr; }
       .focus-card { grid-column: 1 / -1; }
+      .health-summary { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .health-panels { grid-template-columns: 1fr; }
       .mobile-nav {
         position: fixed;
         left: 12px;
@@ -918,7 +1021,7 @@
         bottom: 12px;
         z-index: 50;
         display: grid;
-        grid-template-columns: repeat(5, 1fr);
+        grid-template-columns: repeat(6, 1fr);
         padding: 7px;
         border: 1px solid var(--line);
         border-radius: 18px;
@@ -963,6 +1066,13 @@
       .calendar-day { min-height: 79px; padding: 4px; }
       .day-number { width: 21px; height: 21px; margin-bottom: 3px; font-size: 10px; }
       .calendar-task { padding: 4px; border-left-width: 2px; font-size: 9px; }
+      .health-hero { display: block; padding: 19px; }
+      .health-date { display: block; margin-top: 12px; }
+      .health-summary { gap: 8px; }
+      .health-metric { padding: 15px; }
+      .health-metric-value { font-size: 28px; }
+      .health-form, .health-form.exercise-form { grid-template-columns: minmax(0, 1fr) 92px auto; }
+      .health-form.exercise-form input[name="calories"] { grid-column: 1 / 3; }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -987,6 +1097,7 @@
         <li><button class="nav-button" data-view="upcoming"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><span>Upcoming</span><span class="count" data-count="upcoming">0</span></button></li>
         <li><button class="nav-button" data-view="calendar"><svg class="icon" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M8 3v4M16 3v4M3 10h18M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01"/></svg><span>Calendar</span></button></li>
         <li><button class="nav-button" data-view="completed"><svg class="icon" viewBox="0 0 24 24"><path d="M4 12.5 9 17l11-11"/></svg><span>Completed</span><span class="count" data-count="completed">0</span></button></li>
+        <li><button class="nav-button" data-view="health"><svg class="icon" viewBox="0 0 24 24"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8Z"/><path d="M7 12h2l1.2-2.5 2.2 5 1.2-2.5H17"/></svg><span>Health</span></button></li>
       </ul>
 
       <div class="sidebar-foot">
@@ -1035,10 +1146,20 @@
           <aside class="daily-fact" aria-label="Academic fact of the day">
             <div class="fact-meta"><span>Today’s rare fact</span><span class="fact-discipline" id="factDiscipline">Astronomy</span></div>
             <p class="hero-copy" id="heroCopy">A day on Venus lasts longer than a year on Venus.</p>
+            <div class="fact-actions">
+              <button class="fact-button" id="nextFact" type="button" title="Show another fact">
+                <svg class="icon" viewBox="0 0 24 24"><path d="M16 3h5v5M4 20 21 3M21 16v5h-5M15 15l6 6M4 4l5 5"/></svg>
+                <span>Another fact</span>
+              </button>
+              <button class="fact-button chatgpt" id="askChatGPT" type="button" title="Ask ChatGPT about this fact">
+                <svg class="icon" viewBox="0 0 24 24"><path d="M12 3a4 4 0 0 1 3.8 2.8A4 4 0 0 1 20 10a4 4 0 0 1-1.8 7.4A4 4 0 0 1 12 21a4 4 0 0 1-6.2-3.6A4 4 0 0 1 4 10a4 4 0 0 1 4.2-4.2A4 4 0 0 1 12 3Z"/><path d="m8.5 13 2.2 2.2 4.8-5"/></svg>
+                <span>Read more with ChatGPT</span>
+              </button>
+            </div>
           </aside>
         </section>
 
-        <section class="stats-grid" aria-label="Daily summary">
+        <section class="stats-grid" id="taskStats" aria-label="Daily summary">
           <article class="stat-card focus-card">
             <div class="stat-top"><span>Today’s focus</span><svg class="icon" viewBox="0 0 24 24"><path d="M12 2v4M12 18v4M4.9 4.9l2.8 2.8M16.3 16.3l2.8 2.8M2 12h4M18 12h4M4.9 19.1l2.8-2.8M16.3 7.7l2.8-2.8"/></svg></div>
             <div><div class="stat-number" id="focusStat">Nothing urgent</div><div class="stat-caption" id="focusCaption">Your day is wide open.</div></div>
@@ -1111,6 +1232,66 @@
           </div>
           <div class="calendar-grid" id="calendarGrid"></div>
         </section>
+
+        <section class="health-section" id="healthSection" aria-labelledby="healthTitle" hidden>
+          <header class="health-hero">
+            <div>
+              <h2 id="healthTitle">Today’s health</h2>
+              <p>Log the calories shown on your food labels or tracking app, plus the exercise recorded by your watch or machine. These numbers are a personal log, not a medical recommendation.</p>
+            </div>
+            <span class="health-date" id="healthDate"></span>
+          </header>
+
+          <div class="health-summary" aria-label="Today’s health totals">
+            <article class="health-metric">
+              <span class="health-metric-label">Calories in</span>
+              <span class="health-metric-value" id="caloriesIn">0</span><span class="health-metric-unit">kcal</span>
+            </article>
+            <article class="health-metric">
+              <span class="health-metric-label">Exercise</span>
+              <span class="health-metric-value" id="exerciseMinutes">0</span><span class="health-metric-unit">min</span>
+            </article>
+            <article class="health-metric">
+              <span class="health-metric-label">Calories burned</span>
+              <span class="health-metric-value" id="caloriesBurned">0</span><span class="health-metric-unit">kcal</span>
+            </article>
+            <article class="health-metric net">
+              <span class="health-metric-label">Net calories</span>
+              <span class="health-metric-value" id="netCalories">0</span><span class="health-metric-unit">kcal</span>
+            </article>
+          </div>
+
+          <div class="health-panels">
+            <article class="health-panel">
+              <header class="health-panel-head">
+                <span class="health-panel-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M12 3c-1.4 2.5-1.2 5.2 1 6.5-3.7-.3-6 2.2-6 5.4A6 6 0 0 0 13 21c3.9 0 6-2.7 6-6 0-4.3-3-8.4-7-12Z"/><path d="M9 14c1.2.2 2.1-.2 3-1.2"/></svg></span>
+                <div><h3>Food & drinks</h3><p>Enter the calories for each item.</p></div>
+              </header>
+              <form class="health-form" id="foodForm">
+                <input id="foodName" name="name" type="text" maxlength="80" placeholder="e.g. Chicken sandwich" autocomplete="off" required aria-label="Food or drink" />
+                <input id="foodCalories" name="calories" type="number" min="0" max="10000" step="1" placeholder="Calories" required aria-label="Calories" />
+                <button class="primary-button" type="submit" aria-label="Add food"><svg class="icon" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button>
+              </form>
+              <ul class="health-log" id="foodLog"></ul>
+              <div class="health-empty" id="foodEmpty">No food logged today.</div>
+            </article>
+
+            <article class="health-panel exercise">
+              <header class="health-panel-head">
+                <span class="health-panel-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M6 5v14M3 8v8M18 5v14M21 8v8M6 12h12"/></svg></span>
+                <div><h3>Exercise</h3><p>Track duration and optional calories burned.</p></div>
+              </header>
+              <form class="health-form exercise-form" id="exerciseForm">
+                <input id="exerciseName" name="name" type="text" maxlength="80" placeholder="e.g. Evening run" autocomplete="off" required aria-label="Exercise" />
+                <input id="exerciseDuration" name="minutes" type="number" min="1" max="1440" step="1" placeholder="Minutes" required aria-label="Exercise duration in minutes" />
+                <input id="exerciseCalories" name="calories" type="number" min="0" max="10000" step="1" placeholder="Burned" aria-label="Calories burned, optional" />
+                <button class="primary-button" type="submit" aria-label="Add exercise"><svg class="icon" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button>
+              </form>
+              <ul class="health-log" id="exerciseLog"></ul>
+              <div class="health-empty" id="exerciseEmpty">No exercise logged today.</div>
+            </article>
+          </div>
+        </section>
       </div>
     </main>
   </div>
@@ -1121,6 +1302,7 @@
     <button class="nav-button" data-view="upcoming" aria-label="Upcoming"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><span>Upcoming</span></button>
     <button class="nav-button" data-view="calendar" aria-label="Calendar"><svg class="icon" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M8 3v4M16 3v4M3 10h18M8 14h.01M12 14h.01M16 14h.01"/></svg><span>Calendar</span></button>
     <button class="nav-button" data-view="completed" aria-label="Completed"><svg class="icon" viewBox="0 0 24 24"><path d="M4 12.5 9 17l11-11"/></svg><span>Done</span></button>
+    <button class="nav-button" data-view="health" aria-label="Health"><svg class="icon" viewBox="0 0 24 24"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8Z"/><path d="M7 12h2l1.2-2.5 2.2 5 1.2-2.5H17"/></svg><span>Health</span></button>
   </nav>
 
   <dialog id="taskDialog">
@@ -1214,7 +1396,7 @@
     </div>
     <div class="cloud-body">
       <div id="cloudSignedOut">
-        <p class="cloud-intro">Sign in with the same email on every device. Supabase will keep your tasks, deadlines, reminders, and tracked time safely synchronized.</p>
+        <p class="cloud-intro">Sign in with the same email on every device. Supabase will keep your tasks, deadlines, reminders, tracked time, and health log safely synchronized.</p>
         <form id="cloudLoginForm">
           <div class="field">
             <label for="cloudEmail">Email address</label>
@@ -1248,13 +1430,15 @@
   <script>
     (() => {
       const STORAGE_KEY = 'daylight.tasks.v1';
+      const HEALTH_KEY = 'daylight.health.v1';
       const THEME_KEY = 'daylight.theme.v1';
+      const FACT_CHOICE_KEY = 'daylight.fact.choice.v1';
       const CLOUD_OWNER_KEY = 'daylight.cloud.owner.v1';
       const CLOUD_PENDING_KEY = 'daylight.cloud.pending.v1';
       const SUPABASE_URL = 'https://rwijpwtjctwkyyokslzx.supabase.co';
       const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_MOurzeHZ7flgYR94Y2yCCg_IqswHo-M';
       const SITE_URL = 'https://willieyu7777.github.io/daylight-tasks/';
-      const hadLocalDataAtLoad = localStorage.getItem(STORAGE_KEY) !== null;
+      const hadLocalDataAtLoad = localStorage.getItem(STORAGE_KEY) !== null || localStorage.getItem(HEALTH_KEY) !== null;
       const todayISO = () => {
         const now = new Date();
         const offset = now.getTimezoneOffset();
@@ -1305,6 +1489,7 @@
         { discipline: 'Botany', fact: 'The world’s smallest flowering plants, watermeal, can be smaller than a grain of rice.' },
         { discipline: 'Physics', fact: 'At sea level, air presses on every square metre with a force roughly equal to ten tonnes of weight.' }
       ];
+      let currentFactIndex = 0;
 
       const plusDays = (amount) => {
         const date = new Date();
@@ -1323,6 +1508,7 @@
 
       const state = {
         tasks: loadTasks(),
+        healthEntries: loadHealthEntries(),
         view: 'today',
         query: '',
         sort: 'deadline',
@@ -1344,6 +1530,8 @@
         taskList: document.getElementById('taskList'),
         listSection: document.getElementById('listSection'),
         calendarSection: document.getElementById('calendarSection'),
+        healthSection: document.getElementById('healthSection'),
+        taskStats: document.getElementById('taskStats'),
         calendarGrid: document.getElementById('calendarGrid'),
         calendarMonth: document.getElementById('calendarMonth'),
         sortControl: document.getElementById('sortControl'),
@@ -1358,6 +1546,12 @@
         quickAddForm: document.getElementById('quickAddForm'),
         quickTaskInput: document.getElementById('quickTaskInput'),
         quickCategory: document.getElementById('quickCategory'),
+        foodForm: document.getElementById('foodForm'),
+        exerciseForm: document.getElementById('exerciseForm'),
+        foodLog: document.getElementById('foodLog'),
+        exerciseLog: document.getElementById('exerciseLog'),
+        foodEmpty: document.getElementById('foodEmpty'),
+        exerciseEmpty: document.getElementById('exerciseEmpty'),
         taskDialog: document.getElementById('taskDialog'),
         taskForm: document.getElementById('taskForm'),
         dialogTitle: document.getElementById('dialogTitle'),
@@ -1394,8 +1588,25 @@
         }
       }
 
+      function loadHealthEntries() {
+        try {
+          const saved = localStorage.getItem(HEALTH_KEY);
+          const parsed = saved ? JSON.parse(saved) : [];
+          return Array.isArray(parsed) ? parsed : [];
+        } catch (_) {
+          return [];
+        }
+      }
+
       function saveTasks(options = {}) {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(state.tasks));
+        if (options.cloudSync === false || cloud.applyingRemote) return;
+        localStorage.setItem(CLOUD_PENDING_KEY, 'true');
+        scheduleCloudSave();
+      }
+
+      function saveHealth(options = {}) {
+        localStorage.setItem(HEALTH_KEY, JSON.stringify(state.healthEntries));
         if (options.cloudSync === false || cloud.applyingRemote) return;
         localStorage.setItem(CLOUD_PENDING_KEY, 'true');
         scheduleCloudSave();
@@ -1418,23 +1629,47 @@
         }
       }
 
-      function taskVersion(task) {
-        return new Date(task.updatedAt || task.completedAt || task.createdAt || 0).getTime() || 0;
+      function recordVersion(record) {
+        return new Date(record.updatedAt || record.completedAt || record.createdAt || 0).getTime() || 0;
       }
 
-      function mergeTasks(localTasks = [], remoteTasks = []) {
-        const merged = new Map(remoteTasks.map(task => [task.id, task]));
-        localTasks.forEach(task => {
-          const remote = merged.get(task.id);
-          if (!remote || taskVersion(task) >= taskVersion(remote)) merged.set(task.id, task);
+      function mergeRecords(localRecords = [], remoteRecords = []) {
+        const merged = new Map(remoteRecords.map(record => [record.id, record]));
+        localRecords.forEach(record => {
+          const remote = merged.get(record.id);
+          if (!remote || recordVersion(record) >= recordVersion(remote)) merged.set(record.id, record);
         });
         return [...merged.values()];
       }
 
-      function applyCloudTasks(tasks) {
+      function normalizeCloudBoard(value) {
+        if (Array.isArray(value)) return { version: 2, tasks: value, healthEntries: [] };
+        return {
+          version: 2,
+          tasks: Array.isArray(value?.tasks) ? value.tasks : [],
+          healthEntries: Array.isArray(value?.healthEntries) ? value.healthEntries : []
+        };
+      }
+
+      function currentCloudBoard() {
+        return { version: 2, tasks: state.tasks, healthEntries: state.healthEntries };
+      }
+
+      function mergeCloudBoards(localBoard, remoteBoard) {
+        return {
+          version: 2,
+          tasks: mergeRecords(localBoard.tasks, remoteBoard.tasks),
+          healthEntries: mergeRecords(localBoard.healthEntries, remoteBoard.healthEntries)
+        };
+      }
+
+      function applyCloudBoard(value) {
+        const board = normalizeCloudBoard(value);
         cloud.applyingRemote = true;
-        state.tasks = Array.isArray(tasks) ? tasks : [];
+        state.tasks = board.tasks;
+        state.healthEntries = board.healthEntries;
         saveTasks({ cloudSync: false });
+        saveHealth({ cloudSync: false });
         localStorage.setItem(CLOUD_OWNER_KEY, cloud.user.id);
         localStorage.removeItem(CLOUD_PENDING_KEY);
         cloud.applyingRemote = false;
@@ -1450,9 +1685,9 @@
       async function syncToCloud({ silent = false } = {}) {
         if (!cloud.user || !cloud.client || cloud.syncing) return;
         clearTimeout(cloud.saveTimer);
-        const snapshot = JSON.stringify(state.tasks);
+        const snapshot = JSON.stringify(currentCloudBoard());
         cloud.syncing = true;
-        setCloudStatus('syncing', 'Saving your tasks…');
+        setCloudStatus('syncing', 'Saving your Daylight data…');
         const { error } = await cloud.client
           .from('task_boards')
           .upsert({ user_id: cloud.user.id, tasks: JSON.parse(snapshot), updated_at: new Date().toISOString() }, { onConflict: 'user_id' });
@@ -1465,7 +1700,7 @@
         }
 
         localStorage.setItem(CLOUD_OWNER_KEY, cloud.user.id);
-        if (JSON.stringify(state.tasks) === snapshot) {
+        if (JSON.stringify(currentCloudBoard()) === snapshot) {
           localStorage.removeItem(CLOUD_PENDING_KEY);
           setCloudStatus('connected', 'All changes are saved in the cloud.');
           if (!silent) showToast('Cloud sync complete');
@@ -1491,7 +1726,9 @@
           const localOwner = localStorage.getItem(CLOUD_OWNER_KEY);
           const hasPendingLocalChanges = localStorage.getItem(CLOUD_PENDING_KEY) === 'true';
           const shouldMerge = hasPendingLocalChanges || (hadLocalDataAtLoad && localOwner !== cloud.user.id);
-          applyCloudTasks(shouldMerge ? mergeTasks(state.tasks, data.tasks) : data.tasks);
+          const localBoard = currentCloudBoard();
+          const remoteBoard = normalizeCloudBoard(data.tasks);
+          applyCloudBoard(shouldMerge ? mergeCloudBoards(localBoard, remoteBoard) : remoteBoard);
         }
 
         await syncToCloud({ silent: true });
@@ -1510,7 +1747,7 @@
             filter: `user_id=eq.${cloud.user.id}`
           }, payload => {
             if (cloud.syncing || !payload.new?.tasks) return;
-            applyCloudTasks(payload.new.tasks);
+            applyCloudBoard(payload.new.tasks);
             setCloudStatus('connected', 'Updated from another device.');
           })
           .subscribe();
@@ -1681,12 +1918,79 @@
         });
       }
 
+      function healthEntryTemplate(entry) {
+        const detail = entry.type === 'food'
+          ? `${Number(entry.calories || 0).toLocaleString()} kcal`
+          : `${Number(entry.minutes || 0).toLocaleString()} min${Number(entry.calories || 0) ? ` · ${Number(entry.calories).toLocaleString()} kcal` : ''}`;
+        return `<li class="health-entry">
+          <span class="health-entry-name">${escapeHTML(entry.name)}</span>
+          <span class="health-entry-detail">${detail}</span>
+          <button class="health-delete" type="button" data-delete-health="${entry.id}" aria-label="Delete ${escapeHTML(entry.name)}"><svg class="icon" viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3M7 7l1 13h8l1-13"/></svg></button>
+        </li>`;
+      }
+
+      function renderHealth() {
+        const today = todayISO();
+        const todayEntries = state.healthEntries
+          .filter(entry => entry.date === today)
+          .sort((a, b) => (b.createdAt || '').localeCompare(a.createdAt || ''));
+        const food = todayEntries.filter(entry => entry.type === 'food');
+        const exercise = todayEntries.filter(entry => entry.type === 'exercise');
+        const caloriesIn = food.reduce((sum, entry) => sum + Number(entry.calories || 0), 0);
+        const minutes = exercise.reduce((sum, entry) => sum + Number(entry.minutes || 0), 0);
+        const caloriesBurned = exercise.reduce((sum, entry) => sum + Number(entry.calories || 0), 0);
+
+        document.getElementById('healthDate').textContent = new Intl.DateTimeFormat(undefined, { weekday: 'long', month: 'short', day: 'numeric' }).format(new Date());
+        document.getElementById('caloriesIn').textContent = Math.round(caloriesIn).toLocaleString();
+        document.getElementById('exerciseMinutes').textContent = Math.round(minutes).toLocaleString();
+        document.getElementById('caloriesBurned').textContent = Math.round(caloriesBurned).toLocaleString();
+        document.getElementById('netCalories').textContent = Math.round(caloriesIn - caloriesBurned).toLocaleString();
+        els.foodLog.innerHTML = food.map(healthEntryTemplate).join('');
+        els.exerciseLog.innerHTML = exercise.map(healthEntryTemplate).join('');
+        els.foodEmpty.hidden = food.length > 0;
+        els.exerciseEmpty.hidden = exercise.length > 0;
+      }
+
+      function addHealthEntry(entry) {
+        const createdAt = new Date().toISOString();
+        state.healthEntries.push({
+          id: makeId(),
+          date: todayISO(),
+          name: entry.name.trim(),
+          type: entry.type,
+          calories: Math.max(0, Number(entry.calories || 0)),
+          minutes: entry.type === 'exercise' ? Math.max(0, Number(entry.minutes || 0)) : 0,
+          createdAt,
+          updatedAt: createdAt
+        });
+        saveHealth();
+        renderHealth();
+      }
+
+      function deleteHealthEntry(id) {
+        const entry = state.healthEntries.find(item => item.id === id);
+        if (!entry) return;
+        state.healthEntries = state.healthEntries.filter(item => item.id !== id);
+        saveHealth();
+        renderHealth();
+        showToast(`${entry.name} removed from today’s health log`);
+      }
+
       function render() {
         const tasks = getFilteredTasks();
         const isCalendar = state.view === 'calendar';
-        els.listSection.hidden = isCalendar;
+        const isHealth = state.view === 'health';
+        els.listSection.hidden = isCalendar || isHealth;
         els.calendarSection.hidden = !isCalendar;
-        els.sortControl.classList.toggle('show', state.view === 'all');
+        els.healthSection.hidden = !isHealth;
+        els.taskStats.hidden = isHealth;
+        els.quickAddForm.hidden = isHealth;
+        els.sortControl.classList.toggle('show', state.view === 'all' && !isHealth);
+        if (isHealth) {
+          renderHealth();
+          updateCounts();
+          return;
+        }
         if (isCalendar) {
           renderCalendar();
           updateStats();
@@ -2009,15 +2313,28 @@
         setTheme(document.body.classList.contains('dark') ? 'light' : 'dark');
       }
 
+      function showDailyFact(index, remember = false) {
+        currentFactIndex = ((index % dailyFacts.length) + dailyFacts.length) % dailyFacts.length;
+        const selectedFact = dailyFacts[currentFactIndex];
+        document.getElementById('factDiscipline').textContent = selectedFact.discipline;
+        document.getElementById('heroCopy').textContent = selectedFact.fact;
+        if (remember) {
+          localStorage.setItem(FACT_CHOICE_KEY, JSON.stringify({ date: todayISO(), index: currentFactIndex }));
+        }
+      }
+
       function initialiseDate() {
         const date = new Date();
         const hour = date.getHours();
         document.getElementById('pageTitle').textContent = hour < 12 ? 'Good morning.' : hour < 18 ? 'Good afternoon.' : 'Good evening.';
         document.getElementById('dateEyebrow').textContent = new Intl.DateTimeFormat(undefined, { weekday: 'long', month: 'long', day: 'numeric' }).format(date);
         const dateNumber = Math.floor(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()) / 86400000);
-        const dailyFact = dailyFacts[dateNumber % dailyFacts.length];
-        document.getElementById('factDiscipline').textContent = dailyFact.discipline;
-        document.getElementById('heroCopy').textContent = dailyFact.fact;
+        let factIndex = dateNumber % dailyFacts.length;
+        try {
+          const savedChoice = JSON.parse(localStorage.getItem(FACT_CHOICE_KEY));
+          if (savedChoice?.date === todayISO() && Number.isInteger(savedChoice.index)) factIndex = savedChoice.index;
+        } catch {}
+        showDailyFact(factIndex);
       }
 
       document.querySelectorAll('.nav-button[data-view]').forEach(button => button.addEventListener('click', () => setView(button.dataset.view)));
@@ -2027,6 +2344,16 @@
       document.getElementById('cancelDialog').addEventListener('click', closeDialog);
       document.getElementById('themeToggleTop').addEventListener('click', toggleTheme);
       document.getElementById('themeToggleSide').addEventListener('click', toggleTheme);
+      document.getElementById('nextFact').addEventListener('click', () => {
+        let nextIndex = currentFactIndex;
+        while (nextIndex === currentFactIndex) nextIndex = Math.floor(Math.random() * dailyFacts.length);
+        showDailyFact(nextIndex, true);
+      });
+      document.getElementById('askChatGPT').addEventListener('click', () => {
+        const selectedFact = dailyFacts[currentFactIndex];
+        const prompt = `Tell me more about this ${selectedFact.discipline.toLowerCase()} fact: “${selectedFact.fact}” Explain why it is true, add the academic context, and include reliable sources.`;
+        window.open(`https://chatgpt.com/?q=${encodeURIComponent(prompt)}`, '_blank', 'noopener,noreferrer');
+      });
       els.cloudButton.addEventListener('click', () => {
         updateCloudAccountUI();
         els.cloudDialog.showModal();
@@ -2068,7 +2395,7 @@
         cloud.channel = null;
         cloud.user = null;
         updateCloudAccountUI();
-        showToast('Signed out — local tasks remain on this device');
+        showToast('Signed out — your local Daylight data remains on this device');
       });
       window.addEventListener('online', () => {
         if (cloud.user && localStorage.getItem(CLOUD_PENDING_KEY) === 'true') syncToCloud({ silent: true });
@@ -2085,6 +2412,36 @@
         els.quickTaskInput.focus();
         if (state.view !== 'today' && state.view !== 'all') setView('today');
         showToast('Task added for today');
+      });
+
+      els.foodForm.addEventListener('submit', event => {
+        event.preventDefault();
+        addHealthEntry({
+          type: 'food',
+          name: document.getElementById('foodName').value,
+          calories: document.getElementById('foodCalories').value
+        });
+        els.foodForm.reset();
+        document.getElementById('foodName').focus();
+        showToast('Food added to today’s total');
+      });
+
+      els.exerciseForm.addEventListener('submit', event => {
+        event.preventDefault();
+        addHealthEntry({
+          type: 'exercise',
+          name: document.getElementById('exerciseName').value,
+          minutes: document.getElementById('exerciseDuration').value,
+          calories: document.getElementById('exerciseCalories').value
+        });
+        els.exerciseForm.reset();
+        document.getElementById('exerciseName').focus();
+        showToast('Exercise added to today’s total');
+      });
+
+      els.healthSection.addEventListener('click', event => {
+        const button = event.target.closest('[data-delete-health]');
+        if (button) deleteHealthEntry(button.dataset.deleteHealth);
       });
 
       els.taskForm.addEventListener('submit', event => {
